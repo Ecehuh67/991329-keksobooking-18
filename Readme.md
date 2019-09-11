@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Кирилл Тертунов](https://up.htmlacademy.ru/javascript/18/user/991329).
-* Наставник: `Неизвестно`.
+* Наставник:
 
 ---
 
