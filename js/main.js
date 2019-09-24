@@ -121,7 +121,7 @@ var renderAdvert = function (advertisment) {
   advertElement.querySelector('.popup__text--capacity').textContent = advertisment.offer.rooms + (advertisment.offer.rooms === 1 ? ' комнатa для ' : ' комнаты для ') + advertisment.offer.guests + (advertisment.offer.guests === 1 ? ' гостя ' : ' гостей');
   advertElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertisment.offer.checkin + ' выезд до ' + advertisment.offer.checkout;
 
-  // Добавляем удобства на карточку объявления исходя из массива
+  // Добавляем удобства на карточку объявления исходя из рандомного массива
   var list = advertElement.querySelector('.popup__features');
   list.innerHTML = '';
   for (var j = 0; j < advertisment.offer.features.length; j++) {
@@ -132,6 +132,19 @@ var renderAdvert = function (advertisment) {
   }
 
   advertElement.querySelector('.popup__description').textContent = advertisment.offer.description;
+
+  // Добавляем фото на карточку объявления исходя из рандомного массива
+  var images = advertElement.querySelector('.popup__photos');
+  images.innerHTML = '';
+  for (var k = 0; k < advertisment.offer.photos.length; k++) {
+    var imageItem = document.createElement('img');
+    imageItem.classList.add('popup__photo');
+    imageItem.setAttribute('src', advertisment.offer.photos[k]);
+    imageItem.setAttribute('width', '45');
+    imageItem.setAttribute('height', '40');
+    imageItem.setAttribute('alt', 'Фотография жилья');
+    images.appendChild(imageItem);
+  }
 
   advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author);
 
