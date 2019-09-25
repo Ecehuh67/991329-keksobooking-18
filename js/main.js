@@ -18,6 +18,12 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator',
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']; // Фотографии отеля
 var MAP_PIN_X = 50; // Ширина метки на карте
 var MAP_PIN_Y = 70; // Высота метки на карте
+var TRANSLATE_OF_ACCOMODATION = {// Словарь типов имущества
+  bungalo: 'Бунгало',
+  flat: 'Квартира',
+  house: 'Дом',
+  palace: 'Дворец'
+};
 
 // Создаем функцию для генерации случайного числа от min до max
 var getRandomFloat = function (min, max) {
@@ -98,8 +104,7 @@ mapPins.appendChild(fragment);
 var renderAdvert = function (advertisment) {
   var advertElement = advertTemplate.cloneNode(true);
 
-  /* var typeOfAccomodation = (advertisment.offer.type === 'flat') ? 'Квартира' : (advertisment.offer.type === 'bungalo') ? 'Бунгало' : (advertisment.offer.type === 'house') ? 'Дом' : 'Дворец'; */
-
+  /*
   // Подбираем название типа недвижимости исходя из названия на английском
   var getTypeOfAccomodation = function (object) {
     switch (object.offer.type) {
@@ -113,11 +118,12 @@ var renderAdvert = function (advertisment) {
         return 'Дворец';
     }
   };
-
+  */
   advertElement.querySelector('.popup__title').textContent = advertisment.offer.title;
   advertElement.querySelector('.popup__text--address').textContent = advertisment.offer.address;
   advertElement.querySelector('.popup__text--price').textContent = advertisment.offer.price + ' ₽/ночь';
-  advertElement.querySelector('.popup__type').textContent = getTypeOfAccomodation(advertisment);
+  advertElement.querySelector('.popup__type').textContent = TRANSLATE_OF_ACCOMODATION[advertisment.offer.type];
+
   advertElement.querySelector('.popup__text--capacity').textContent = advertisment.offer.rooms + (advertisment.offer.rooms === 1 ? ' комнатa для ' : ' комнаты для ') + advertisment.offer.guests + (advertisment.offer.guests === 1 ? ' гостя ' : ' гостей');
   advertElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertisment.offer.checkin + ' выезд до ' + advertisment.offer.checkout;
 
@@ -126,8 +132,7 @@ var renderAdvert = function (advertisment) {
   list.innerHTML = '';
   for (var j = 0; j < advertisment.offer.features.length; j++) {
     var listItem = document.createElement('li');
-    listItem.classList.add('popup__feature--' + advertisment.offer.features[j]);
-    listItem.classList.add('popup__feature');
+    listItem.classList.add('popup__feature--' + advertisment.offer.features[j], 'popup__feature');
     list.appendChild(listItem);
   }
 
