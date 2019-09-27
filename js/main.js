@@ -1,6 +1,6 @@
 'use strict';
 
-var mapPins = document.querySelector('.map__pins');
+// var mapPins = document.querySelector('.map__pins');
 var accomodationTemplate = document.querySelector('#pin')
   .content.
 querySelector('.map__pin'); //  Ищем контент шаблона пина для карты
@@ -18,12 +18,25 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator',
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']; // Фотографии отеля
 var MAP_PIN_X = 50; // Ширина метки на карте
 var MAP_PIN_Y = 70; // Высота метки на карте
+var MAIN_PIN_X = 65;
+var MAIN_PIN_Y = 65;
+var MAIN_PIN_X_ACTIVE = 65;
+var MAIN_PIN_Y_ACTIVE = 87;
 var TRANSLATE_OF_ACCOMODATION = {// Словарь типов имущества
   bungalo: 'Бунгало',
   flat: 'Квартира',
   house: 'Дом',
   palace: 'Дворец'
 };
+var ENT_CODE = 13; // Keycode of enter button
+var ROOMS_GUESTS_RELATION = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  0: [0]
+};
+var ROOMS = [1, 2, 3, 0];
+var GUESTS = [3, 2, 1, 0];
 
 // Создаем функцию для генерации случайного числа от min до max
 var getRandomFloat = function (min, max) {
@@ -74,8 +87,8 @@ var getAccomodations = function (amount) {
 
 var accomodations = getAccomodations(ACCOMODATIONS);
 
-// Показываем карту
-document.querySelector('.map').classList.remove('map--faded');
+// Показываем карту (temporary it's not active)
+// document.querySelector('.map').classList.remove('map--faded');
 
 // Создаем метку на карте созгласно шаблона
 var renderAccomodation = function (accomodation) {
@@ -97,8 +110,8 @@ for (var i = 0; i < accomodations.length; i++) {
   fragment.appendChild(renderAccomodation(accomodations[i]));
 }
 
-// Переносим маркеры на карту из буфера
-mapPins.appendChild(fragment);
+// Переносим маркеры на карту из буфера (temporary it's not active)
+// mapPins.appendChild(fragment);
 
 // Создаем объявление на карте из шаблона
 var renderAdvert = function (advertisment) {
@@ -162,5 +175,83 @@ var advert = document.createDocumentFragment();
 // Копируем объявление в буфер
 advert.appendChild(renderAdvert(accomodations[0]));
 
-// Переносим объявление на карты из буфера
-document.querySelector('.map').insertBefore(advert, document.querySelector('.map__filters-container'));
+// Переносим объявление на карты из буфера (temporary it's not active)
+// document.querySelector('.map').insertBefore(advert,  document.querySelector('.map__filters-container'));
+
+// Find form to ban fieldset be edited
+var advertFieldset = document.querySelector('.ad-form').querySelectorAll('fieldset');
+
+// Set 'disabled' on each fieldset of the form
+var setOptionDisabled = function (object) {
+  for (var j = 0; j < object.length; j++) {
+    var fieldsetItem = object[j];
+    fieldsetItem.setAttribute('disabled', 'disabled');
+  }
+};
+setOptionDisabled(advertFieldset);
+
+// Find major pin in the code
+var mainPin = document.querySelector('.map__pin--main');
+
+// Create function to set address on the map
+var getAddress = function (pinX, pinY) {
+  var addressInput = document.querySelector('#address');
+  var pointX = parseInt(mainPin.style.left, 10) + pinX / 2;
+  if (pinY === MAIN_PIN_Y) {
+    var pointY = parseInt(mainPin.style.top, 10) + pinY / 2;
+  } else {
+    pointY = parseInt(mainPin.style.top, 10) + pinY;
+  }
+  addressInput.setAttribute('value', pointX + ', ' + pointY);
+};
+
+// Set address on the inactive map
+getAddress(MAIN_PIN_X, MAIN_PIN_Y);
+
+// Create function for deleting 'disabled' from each fieldset of the form
+var mousedown = function (object) {
+  for (var k = 0; k < object.length; k++) {
+    var objectItem = object[k];
+    objectItem.removeAttribute('disabled', 'disabled');
+  }
+  getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
+};
+
+// Create function for activating form by pressing Enter
+var onMapPinEnterPress = function (evt) {
+  if (evt.keyCode === ENT_CODE) {
+    mousedown(advertFieldset);
+    getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
+  }
+};
+
+// Put a handler on the major pin for click
+mainPin.addEventListener('click', function () {
+  mousedown(advertFieldset);
+});
+
+// Put a handler on the major pin for keydownn
+mainPin.addEventListener('keydown', onMapPinEnterPress);
+
+// Find list of options of rooms
+var selectRooms = document.querySelector('#room_number');
+
+// Create a function to cansel disabled on option for choosing guests
+var getAvailableGuests = function () {
+  var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
+  setOptionDisabled(optionGuests);
+  var index = selectRooms.selectedIndex;
+  var dataGuests = ROOMS_GUESTS_RELATION[ROOMS[index]];
+  for (var j = 0; j < GUESTS.length; j++) {
+    for (var k = 0; k < dataGuests.length; k++) {
+      if (GUESTS[j] === dataGuests[k]) {
+        optionGuests[j].removeAttribute('disabled', 'disabled');
+      }
+    }
+  }
+};
+
+// Put a handler on to control the list of guests
+selectRooms.addEventListener('change', function () {
+  getAvailableGuests();
+});
