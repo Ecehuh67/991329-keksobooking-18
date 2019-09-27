@@ -116,22 +116,6 @@ for (var i = 0; i < accomodations.length; i++) {
 // Создаем объявление на карте из шаблона
 var renderAdvert = function (advertisment) {
   var advertElement = advertTemplate.cloneNode(true);
-
-  /*
-  // Подбираем название типа недвижимости исходя из названия на английском
-  var getTypeOfAccomodation = function (object) {
-    switch (object.offer.type) {
-      case ('bungalo'):
-        return 'Бунгало';
-      case ('flat'):
-        return 'Квартира';
-      case ('house'):
-        return 'Дом';
-      default:
-        return 'Дворец';
-    }
-  };
-  */
   advertElement.querySelector('.popup__title').textContent = advertisment.offer.title;
   advertElement.querySelector('.popup__text--address').textContent = advertisment.offer.address;
   advertElement.querySelector('.popup__text--price').textContent = advertisment.offer.price + ' ₽/ночь';
@@ -235,10 +219,14 @@ mainPin.addEventListener('keydown', onMapPinEnterPress);
 
 // Find list of options of rooms
 var selectRooms = document.querySelector('#room_number');
+var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
+
+// Put disabled on list of guests to avoid bag with 1 room and 1 guest when the page
+// will be opened without changing amount of rooms
+setOptionDisabled(optionGuests);
 
 // Create a function to cansel disabled on option for choosing guests
 var getAvailableGuests = function () {
-  var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
   setOptionDisabled(optionGuests);
   var index = selectRooms.selectedIndex;
   var dataGuests = ROOMS_GUESTS_RELATION[ROOMS[index]];
