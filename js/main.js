@@ -212,6 +212,7 @@ var onMapPinEnterPress = function (evt) {
 // Put a handler on the major pin for click
 mainPin.addEventListener('click', function () {
   mousedown(advertFieldset);
+  document.querySelector('.map').classList.remove('map--faded');
 });
 
 // Put a handler on the major pin for keydownn
