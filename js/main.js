@@ -1,6 +1,6 @@
 'use strict';
 
-// var mapPins = document.querySelector('.map__pins');
+var mapPins = document.querySelector('.map__pins');
 var accomodationTemplate = document.querySelector('#pin')
   .content.
 querySelector('.map__pin'); //  Ищем контент шаблона пина для карты
@@ -29,6 +29,7 @@ var TRANSLATE_OF_ACCOMODATION = {// Словарь типов имущества
   palace: 'Дворец'
 };
 var ENT_CODE = 13; // Keycode of enter button
+var ECS_CODE = 27;
 var ROOMS_GUESTS_RELATION = {
   1: [1],
   2: [1, 2],
@@ -99,6 +100,13 @@ var renderAccomodation = function (accomodation) {
   accomodationElement.querySelector('img').setAttribute('src', accomodation.author);
   accomodationElement.querySelector('img').setAttribute('alt', accomodation.offer.title);
 
+  //
+  accomodationElement.addEventListener('click', function () {
+
+    advert.appendChild(renderAdvert(accomodation));
+    document.querySelector('.map').insertBefore(advert, document.querySelector('.map__filters-container'));
+  });
+
   return accomodationElement;
 };
 
@@ -150,6 +158,23 @@ var renderAdvert = function (advertisment) {
 
   advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author);
 
+  // Put on a handler for closing advert
+  var buttonPopup = advertElement.querySelector('.popup__close');
+  var hidePopup = function () {
+    advertElement.parentNode.removeChild(advertElement);
+    document.removeEventListener('keydown', onPopuoCloseEscapePress);
+  };
+  var onPopuoCloseEscapePress = function (evt) {
+    if (evt.keyCode === ECS_CODE) {
+      hidePopup();
+    }
+  };
+
+  buttonPopup.addEventListener('click', function () {
+    hidePopup();
+  });
+  document.addEventListener('keydown', onPopuoCloseEscapePress);
+
   return advertElement;
 };
 
@@ -198,7 +223,12 @@ var mousedown = function (object) {
     var objectItem = object[k];
     objectItem.removeAttribute('disabled', 'disabled');
   }
+  // Chenge сoordinates for pin in the field of address
   getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
+  // Render pins on the map from buffer
+  mapPins.appendChild(fragment);
+  // Render advert on the map from buffer
+  document.querySelector('.map').insertBefore(advert, document.querySelector('.map__filters-container'));
 };
 
 // Create function for activating form by pressing Enter
