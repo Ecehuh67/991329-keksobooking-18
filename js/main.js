@@ -305,6 +305,7 @@ type.addEventListener('change', function () {
 var timein = document.querySelector('#timein');
 var timeout = document.querySelector('#timeout');
 
+/*
 var deleteSelected = function (object) {
   var objectItem = object.querySelectorAll('option');
   for (var j = 0; j < object.length; j++) {
@@ -328,11 +329,14 @@ var getTimeIn = function () {
   var timeinItems = timein.querySelectorAll('option');
   timeinItems[index].setAttribute('selected', 'selected');
 };
+*/
 
 // Pun on handlers if timein/timeout are changed
 timein.addEventListener('change', function () {
-  getTimeOut();
+  //getTimeOut();
+  timeout.value = timein.value;
 });
 timeout.addEventListener('change', function () {
-  getTimeIn();
+  //getTimeIn();
+  timein.value = timeout.value;
 });
