@@ -237,6 +237,8 @@ var mousedown = function (object) {
   mapPins.appendChild(fragment);
   // Render advert on the map from buffer
   map.insertBefore(advert, map.querySelector('.map__filters-container'));
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
 };
 
 // Create function for activating form by pressing Enter
@@ -250,8 +252,8 @@ var onMapPinEnterPress = function (evt) {
 // Put a handler on the major pin for click
 mainPin.addEventListener('click', function () {
   mousedown(advertFieldset);
-  map.classList.remove('map--faded');
-  form.classList.remove('ad-form--disabled');
+  //map.classList.remove('map--faded');
+  //form.classList.remove('ad-form--disabled');
 });
 
 // Put a handler on the major pin for keydownn
