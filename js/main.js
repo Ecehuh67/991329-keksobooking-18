@@ -1,5 +1,7 @@
 'use strict';
 
+var map = document.querySelector('.map');
+var form = document.querySelector('.ad-form');
 var mapPins = document.querySelector('.map__pins');
 var accomodationTemplate = document.querySelector('#pin')
   .content.
@@ -27,6 +29,12 @@ var TRANSLATE_OF_ACCOMODATION = {// Словарь типов имущества
   flat: 'Квартира',
   house: 'Дом',
   palace: 'Дворец'
+};
+var MINPRICE_OF_ACCOMODATION = {//
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
 };
 var ENT_CODE = 13; // Keycode of enter button
 var ECS_CODE = 27;
@@ -104,7 +112,7 @@ var renderAccomodation = function (accomodation) {
   accomodationElement.addEventListener('click', function () {
 
     advert.appendChild(renderAdvert(accomodation));
-    document.querySelector('.map').insertBefore(advert, document.querySelector('.map__filters-container'));
+    map.insertBefore(advert, map.querySelector('.map__filters-container'));
   });
 
   return accomodationElement;
@@ -188,7 +196,7 @@ advert.appendChild(renderAdvert(accomodations[0]));
 // document.querySelector('.map').insertBefore(advert,  document.querySelector('.map__filters-container'));
 
 // Find form to ban fieldset be edited
-var advertFieldset = document.querySelector('.ad-form').querySelectorAll('fieldset');
+var advertFieldset = form.querySelectorAll('fieldset');
 
 // Set 'disabled' on each fieldset of the form
 var setOptionDisabled = function (object) {
@@ -200,7 +208,7 @@ var setOptionDisabled = function (object) {
 setOptionDisabled(advertFieldset);
 
 // Find major pin in the code
-var mainPin = document.querySelector('.map__pin--main');
+var mainPin = map.querySelector('.map__pin--main');
 
 // Create function to set address on the map
 var getAddress = function (pinX, pinY) {
@@ -228,7 +236,7 @@ var mousedown = function (object) {
   // Render pins on the map from buffer
   mapPins.appendChild(fragment);
   // Render advert on the map from buffer
-  document.querySelector('.map').insertBefore(advert, document.querySelector('.map__filters-container'));
+  map.insertBefore(advert, map.querySelector('.map__filters-container'));
 };
 
 // Create function for activating form by pressing Enter
@@ -242,7 +250,8 @@ var onMapPinEnterPress = function (evt) {
 // Put a handler on the major pin for click
 mainPin.addEventListener('click', function () {
   mousedown(advertFieldset);
-  document.querySelector('.map').classList.remove('map--faded');
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
 });
 
 // Put a handler on the major pin for keydownn
@@ -273,4 +282,57 @@ var getAvailableGuests = function () {
 // Put a handler on to control the list of guests
 selectRooms.addEventListener('change', function () {
   getAvailableGuests();
+});
+
+// Find field of type of accomodation
+var type = document.querySelector('#type');
+
+// Create a function for defining min price for type of accomodation
+var getMinPriceOfAccomodation = function () {
+  var typyOptions = type.querySelectorAll('option');
+  var price = document.querySelector('#price');
+  var index = type.selectedIndex;
+  price.setAttribute('min', MINPRICE_OF_ACCOMODATION[typyOptions[index].value]);
+  price.setAttribute('placeholder', MINPRICE_OF_ACCOMODATION[typyOptions[index].value]);
+};
+
+// Put on a handler if type of accomodation is changed
+type.addEventListener('change', function () {
+  getMinPriceOfAccomodation();
+});
+
+// Create function for cleaning data from selected
+var timein = document.querySelector('#timein');
+var timeout = document.querySelector('#timeout');
+
+var deleteSelected = function (object) {
+  var objectItem = object.querySelectorAll('option');
+  for (var j = 0; j < object.length; j++) {
+    objectItem[j].removeAttribute('selected', 'selected');
+  }
+};
+
+// Create functions for setting selected
+var getTimeOut = function () {
+  deleteSelected(timeout);
+  deleteSelected(timein);
+  var index = timein.selectedIndex;
+  var timeoutItems = timeout.querySelectorAll('option');
+  timeoutItems[index].setAttribute('selected', 'selected');
+};
+
+var getTimeIn = function () {
+  deleteSelected(timein);
+  deleteSelected(timeout);
+  var index = timeout.selectedIndex;
+  var timeinItems = timein.querySelectorAll('option');
+  timeinItems[index].setAttribute('selected', 'selected');
+};
+
+// Pun on handlers if timein/timeout are changed
+timein.addEventListener('change', function () {
+  getTimeOut();
+});
+timeout.addEventListener('change', function () {
+  getTimeIn();
 });
