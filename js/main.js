@@ -333,10 +333,10 @@ var getTimeIn = function () {
 
 // Pun on handlers if timein/timeout are changed
 timein.addEventListener('change', function () {
-  //getTimeOut();
+  // getTimeOut();
   timeout.value = timein.value;
 });
 timeout.addEventListener('change', function () {
-  //getTimeIn();
+  // getTimeIn();
   timein.value = timeout.value;
 });
