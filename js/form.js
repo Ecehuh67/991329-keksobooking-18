@@ -117,6 +117,13 @@
         y: moveEvt.clientY
       };
 
+      if (window.pin.mainPin.offsetLeft < 0) {
+        startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
+
+      } else if (window.pin.mainPin.offsetLeft > window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE) {
+        startCoords.x = window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE + 'px';
+      }
+
       if (startCoords.y > COORD_Y.max) {
         startCoords.y = COORD_Y.max + MAIN_PIN_Y_ACTIVE + 'px';
 
