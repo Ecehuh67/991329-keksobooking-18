@@ -120,8 +120,8 @@
         startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
         return startCoords.x;
 
-      } else if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE / 2) {
-        startCoords.x = window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE + 'px';
+      } else if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.pin.map.clientWidth) {
+        startCoords.x = window.pin.map.clientWidth + 'px';
         return startCoords.x;
       }
 
