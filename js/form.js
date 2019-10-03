@@ -106,7 +106,6 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -117,11 +116,13 @@
         y: moveEvt.clientY
       };
 
-      if (window.pin.mainPin.offsetLeft < 0) {
+      if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
         startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
+        return startCoords.x;
 
-      } else if (window.pin.mainPin.offsetLeft > window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE) {
+      } else if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE / 2) {
         startCoords.x = window.pin.map.clientWidth - MAIN_PIN_X_ACTIVE + 'px';
+        return startCoords.x;
       }
 
       if (startCoords.y > COORD_Y.max) {
@@ -206,5 +207,4 @@
     // getTimeIn();
     timein.value = timeout.value;
   });
-
 })();
