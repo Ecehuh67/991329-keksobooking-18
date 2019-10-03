@@ -118,10 +118,11 @@
       };
 
       if (startCoords.y > COORD_Y.max) {
-        startCoords.y = COORD_Y.max + 'px';
+        startCoords.y = COORD_Y.max + MAIN_PIN_Y_ACTIVE + 'px';
+        console.log('1');
 
       } else if (startCoords.y < COORD_Y.min) {
-        startCoords.y = COORD_Y.min + 'px';
+        startCoords.y = COORD_Y.min - MAIN_PIN_Y_ACTIVE + 'px';
       }
 
       window.pin.mainPin.style.top = (window.pin.mainPin.offsetTop - shift.y) + 'px';
@@ -130,14 +131,16 @@
 
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
+
       // Change сoordinates for pin in the field of address
       getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
-      window.pin.mainPin.removeEventListener('mousemove', onMouseMove);
-      window.pin.mainPin.removeEventListener('mouseup', onMouseUp);
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
     };
 
-    window.pin.mainPin.addEventListener('mousemove', onMouseMove);
-    window.pin.mainPin.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
   // Find list of options of rooms
