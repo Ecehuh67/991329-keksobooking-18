@@ -134,6 +134,8 @@
 
       window.pin.mainPin.style.top = (window.pin.mainPin.offsetTop - shift.y) + 'px';
       window.pin.mainPin.style.left = (window.pin.mainPin.offsetLeft - shift.x) + 'px';
+
+      return '1'; // eslint error
     };
 
     var onMouseUp = function (upEvt) {
