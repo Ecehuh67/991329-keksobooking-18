@@ -33,7 +33,7 @@
         },
         location: {
           x: window.util.getRandomFloat(0, locationX),
-          y: window.util.getRandomFloat(130, 630)
+          y: window.util.getRandomFloat(130 + 81, 630) // 81 it's height of a pin
         }
       };
       accomodation[i] = characteristics;
