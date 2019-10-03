@@ -119,7 +119,6 @@
 
       if (startCoords.y > COORD_Y.max) {
         startCoords.y = COORD_Y.max + MAIN_PIN_Y_ACTIVE + 'px';
-        console.log('1');
 
       } else if (startCoords.y < COORD_Y.min) {
         startCoords.y = COORD_Y.min - MAIN_PIN_Y_ACTIVE + 'px';
