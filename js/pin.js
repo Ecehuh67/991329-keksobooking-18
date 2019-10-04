@@ -23,6 +23,10 @@
 
     //
     accomodationElement.addEventListener('click', function () {
+      var popup = document.querySelector('.map__card');
+      if (popup) {
+        popup.parentNode.removeChild(popup);
+      }
 
       window.advert.advert.appendChild(window.advert.renderAdvert(accomodation));
       map.insertBefore(window.advert.advert, map.querySelector('.map__filters-container'));
@@ -43,6 +47,6 @@
     fragment: fragment,
     map: map,
     mainPin: mainPin,
-    mapPins: mapPins
+    mapPins: mapPins,
   };
 })();

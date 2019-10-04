@@ -53,7 +53,11 @@
     // Put on a handler for closing advert
     var buttonPopup = advertElement.querySelector('.popup__close');
     var hidePopup = function () {
-      advertElement.parentNode.removeChild(advertElement);
+      var popup = document.querySelector('.map__card');
+      if (popup) {
+        popup.parentNode.removeChild(popup);
+      }
+      // advertElement.parentNode.removeChild(advertElement);
       document.removeEventListener('keydown', onPopuoCloseEscapePress);
     };
     var onPopuoCloseEscapePress = function (evt) {

@@ -7,7 +7,11 @@
   var MAIN_PIN_X = 65;
   var MAIN_PIN_Y = 65;
   var MAIN_PIN_X_ACTIVE = 65;
-  var MAIN_PIN_Y_ACTIVE = 87;
+  var MAIN_PIN_Y_ACTIVE = 81;
+  var COORD_Y = {
+    min: 130,
+    max: 630
+  };
   var MINPRICE_OF_ACCOMODATION = {
     bungalo: 0,
     flat: 1000,
@@ -22,6 +26,8 @@
   };
   var ROOMS = [1, 2, 3, 0];
   var GUESTS = [3, 2, 1, 0];
+
+  var isActive = false;
 
   // Find form to ban fieldset be edited
   var advertFieldset = form.querySelectorAll('fieldset');
@@ -40,11 +46,11 @@
   // Create function to set address in a form
   var getAddress = function (pinX, pinY) {
     var addressInput = document.querySelector('#address');
-    var pointX = parseInt(window.pin.mainPin.style.left, 10) + pinX / 2;
+    var pointX = Math.round(parseInt(window.pin.mainPin.style.left, 10) + pinX / 2);
     if (pinY === MAIN_PIN_Y) {
-      var pointY = parseInt(window.pin.mainPin.style.top, 10) + pinY / 2;
+      var pointY = Math.round(parseInt(window.pin.mainPin.style.top, 10) + pinY / 2);
     } else {
-      pointY = parseInt(window.pin.mainPin.style.top, 10) + pinY;
+      pointY = Math.round(parseInt(window.pin.mainPin.style.top, 10) + pinY);
     }
     addressInput.setAttribute('value', pointX + ', ' + pointY);
   };
@@ -58,8 +64,6 @@
       var objectItem = object[k];
       objectItem.removeAttribute('disabled', 'disabled');
     }
-    // Change сoordinates for pin in the field of address
-    getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
     // Render pins on the map from buffer
     window.pin.mapPins.appendChild(window.pin.fragment);
     // Render advert on the map from buffer
@@ -67,7 +71,8 @@
     window.pin.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.pin.mainPin.removeEventListener('click', activeForm);
-
+    isActive = true;
+    return isActive;
   };
 
   // Put a function in constant for way to delete it from a handler
@@ -80,14 +85,72 @@
     if (evt.keyCode === window.util.ENT_CODE) {
       mousedown(advertFieldset);
       getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
+      window.pin.mainPin.removeEventListener('keydown', onMapPinEnterPress);
     }
   };
 
-  // Put a handler on the major pin for click
-  window.pin.mainPin.addEventListener('click', activeForm);
-
   // Put a handler on the major pin for keydownn
   window.pin.mainPin.addEventListener('keydown', onMapPinEnterPress);
+
+  window.pin.mainPin.addEventListener('mousedown', function (evt) {
+
+    if (!isActive) {
+      mousedown(advertFieldset);
+    }
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
+        startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
+        return startCoords.x;
+
+      } else if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.pin.map.clientWidth) {
+        startCoords.x = window.pin.map.clientWidth + 'px';
+        return startCoords.x;
+      }
+
+      if (startCoords.y > COORD_Y.max) {
+        startCoords.y = COORD_Y.max + MAIN_PIN_Y_ACTIVE + 'px';
+
+      } else if (startCoords.y < COORD_Y.min) {
+        startCoords.y = COORD_Y.min - MAIN_PIN_Y_ACTIVE + 'px';
+      }
+
+      window.pin.mainPin.style.top = (window.pin.mainPin.offsetTop - shift.y) + 'px';
+      window.pin.mainPin.style.left = (window.pin.mainPin.offsetLeft - shift.x) + 'px';
+
+      return '1'; // eslint error
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      // Change сoordinates for pin in the field of address
+      getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
   // Find list of options of rooms
   var selectRooms = document.querySelector('#room_number');
@@ -146,5 +209,4 @@
     // getTimeIn();
     timein.value = timeout.value;
   });
-
 })();
