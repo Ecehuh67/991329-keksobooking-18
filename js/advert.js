@@ -48,7 +48,7 @@
       images.appendChild(imageItem);
     }
 
-    advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author);
+    advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author.avatar);
 
     // Put on a handler for closing advert
     var buttonPopup = advertElement.querySelector('.popup__close');
@@ -74,14 +74,8 @@
     return advertElement;
   };
 
-  // Создаем буфер куда будем временно копировать объявления
-  var advert = document.createDocumentFragment();
-
-  // Копируем объявление в буфер
-  advert.appendChild(renderAdvert(window.data.accomodations[0]));
 
   window.advert = {
-    advert: advert,
     renderAdvert: renderAdvert
   };
 })();

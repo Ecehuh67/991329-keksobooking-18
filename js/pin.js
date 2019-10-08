@@ -28,8 +28,10 @@
         popup.parentNode.removeChild(popup);
       }
 
-      window.advert.advert.appendChild(window.advert.renderAdvert(accomodation));
-      map.insertBefore(window.advert.advert, map.querySelector('.map__filters-container'));
+      var advert = document.createDocumentFragment();
+      advert.appendChild(window.advert.renderAdvert(accomodation));
+      map.insertBefore(advert, map.querySelector('.map__filters-container'));
+
     });
 
     return accomodationElement;

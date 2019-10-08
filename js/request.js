@@ -31,7 +31,18 @@
       fragment.appendChild(window.pin.renderAccomodation(pins[i]));
     }
 
+    // Render pins on the map from buffer
     window.pin.mapPins.appendChild(fragment);
+
+    // Создаем буфер куда будем временно копировать объявления
+    var advert = document.createDocumentFragment();
+
+    // Копируем объявление в буфер
+    advert.appendChild(window.advert.renderAdvert(pins[0]));
+
+    // Render advert on the map from buffer
+    window.pin.map.insertBefore(advert, window.pin.map.querySelector('.map__filters-container'));
+
   };
 
   // Callback for showing a error message if data isn't loaded from server

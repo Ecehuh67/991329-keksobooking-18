@@ -69,7 +69,8 @@
     server.load(server.successHandler, server.errorHandler);
 
     // Render advert on the map from buffer
-    window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));
+    /* window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));*/
+
     window.pin.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.pin.mainPin.removeEventListener('click', activeForm);
