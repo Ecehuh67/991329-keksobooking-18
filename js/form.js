@@ -64,8 +64,10 @@
       var objectItem = object[k];
       objectItem.removeAttribute('disabled', 'disabled');
     }
-    // Render pins on the map from buffer
-    window.pin.mapPins.appendChild(window.pin.fragment);
+    // Render pins on the map from server data
+    var server = window.request;
+    server.load(server.successHandler, server.errorHandler);
+
     // Render advert on the map from buffer
     window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));
     window.pin.map.classList.remove('map--faded');
