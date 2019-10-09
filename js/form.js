@@ -212,4 +212,30 @@
     // getTimeIn();
     timein.value = timeout.value;
   });
+
+  //
+  var successUpload = function () {
+    window.pin.mainPin.setAttribute('style', 'left: 570px, top: 375px;');
+    getAddress(MAIN_PIN_X, MAIN_PIN_Y);
+
+    var advert = window.pin.map.querySelector('.map__card');
+    advert.parentNode.removeChild(advert);
+
+    // Find pins and delete them from map
+    var pins = window.pin.map.querySelectorAll('.map__pin');
+    for (var j = 1; j < pins.length; j++) {
+      pins[j].parentNode.removeChild(pins[j]);
+    }
+  };
+
+  form.addEventListener('submit', function (evt) {
+    window.request.upload(new FormData(form), window.request.uploadSuccessHandler, window.request.uploadErrorHandler);
+    successUpload();
+    evt.preventDefault();
+  });
+
+  window.form = {
+    form: form
+  };
+
 })();

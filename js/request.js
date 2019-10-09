@@ -63,9 +63,98 @@
     firstAdvert.parentNode.removeChild(firstAdvert);
   };
 
+  // URL for uploading data on a server
+  var urlUpload = 'https://js.dump.academy/keksobooking';
+
+  // Create function which will be able to check status of loading data
+  var upload = function (data, onSuccess, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    xhr.addEventListener('load', function () {
+      if (xhr.status === 200) {
+        onSuccess(xhr.response);
+      } else {
+        onError();
+      }
+    });
+
+    xhr.open('POST', urlUpload);
+    xhr.send(data);
+  };
+
+  // Create function if there is a mistake in an uploading form
+  var uploadErrorHandler = function () {
+    var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+    var error = errorTemplate.cloneNode(true);
+    // var errorButton = error.querySelector('.error__button');
+
+    // Add the pattern in DOM
+    document.body.querySelector('main').insertAdjacentElement('afterbegin', error);
+
+    // Find the error message to delete it
+    var messageError = document.body.querySelector('main .error');
+
+    // Create callback to delete message by click
+    var onFormErrorButton = function () {
+      messageError.parentNode.removeChild(messageError);
+      document.removeEventListener('click', onFormErrorButton);
+    };
+
+    // Create callback to delete message by press Escape
+    var onFormErrorEscapePress = function (evt) {
+      if (evt.keyCode === window.util.ECS_CODE) {
+        messageError.parentNode.removeChild(messageError);
+        document.removeEventListener('keydown', onFormErrorEscapePress);
+      }
+    };
+
+    // Add handlers on the form
+    document.addEventListener('click', onFormErrorButton);
+    document.addEventListener('keydown', onFormErrorEscapePress);
+  };
+
+  //
+  var uploadSuccessHandler = function () {
+    var successTemplate = document.querySelector('#success')
+    .content
+    .querySelector('.success');
+    var success = successTemplate.cloneNode(true);
+
+    // Add the pattern in DOM
+    document.body.querySelector('main').insertAdjacentElement('afterbegin', success);
+
+    window.form.form.reset();
+
+
+    var messageSuccess = document.body.querySelector('main .success');
+
+    // Create callback to delete message by click
+    var onFormSuccessWindow = function () {
+      messageSuccess.parentNode.removeChild(messageSuccess);
+      document.removeEventListener('click', onFormSuccessWindow);
+    };
+
+    // Create callback to delete message by press Escape
+    var onFormSuccessEscapePress = function (evt) {
+      if (evt.keyCode === window.util.ECS_CODE) {
+        messageSuccess.parentNode.removeChild(messageSuccess);
+        document.removeEventListener('keydown', onFormSuccessEscapePress);
+      }
+    };
+
+    document.addEventListener('click', onFormSuccessWindow);
+    document.addEventListener('keydown', onFormSuccessEscapePress);
+  };
+
   window.request = {
     load: load,
     successHandler: successHandler,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    upload: upload,
+    uploadErrorHandler: uploadErrorHandler,
+    uploadSuccessHandler: uploadSuccessHandler
   };
 })();
