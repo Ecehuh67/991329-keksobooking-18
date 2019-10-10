@@ -147,6 +147,20 @@
 
     document.addEventListener('click', onFormSuccessWindow);
     document.addEventListener('keydown', onFormSuccessEscapePress);
+
+    // Find main pin and set it into the first position
+    window.pin.mainPin.setAttribute('style', 'left: 570px; top: 375px;');
+    window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
+
+    // Find an advert and delete it
+    var advert = window.pin.map.querySelector('.map__card');
+    advert.parentNode.removeChild(advert);
+
+    // Find pins and delete them from map
+    var pins = window.pin.map.querySelectorAll('.map__pin');
+    for (var j = 1; j < pins.length; j++) {
+      pins[j].parentNode.removeChild(pins[j]);
+    }
   };
 
   window.request = {
