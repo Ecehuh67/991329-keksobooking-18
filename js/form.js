@@ -64,10 +64,13 @@
       var objectItem = object[k];
       objectItem.removeAttribute('disabled', 'disabled');
     }
-    // Render pins on the map from buffer
-    window.pin.mapPins.appendChild(window.pin.fragment);
+    // Render pins on the map from server data
+    var server = window.request;
+    server.load(server.successHandler, server.errorHandler);
+
     // Render advert on the map from buffer
-    window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));
+    /* window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));*/
+
     window.pin.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.pin.mainPin.removeEventListener('click', activeForm);
@@ -125,11 +128,13 @@
         return startCoords.x;
       }
 
-      if (startCoords.y > COORD_Y.max) {
-        startCoords.y = COORD_Y.max + MAIN_PIN_Y_ACTIVE + 'px';
+      if (window.pin.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE > COORD_Y.max) {
+        startCoords.y = COORD_Y.max + 'px';
+        return startCoords.y;
 
-      } else if (startCoords.y < COORD_Y.min) {
-        startCoords.y = COORD_Y.min - MAIN_PIN_Y_ACTIVE + 'px';
+      } else if (window.pin.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE / 2 < COORD_Y.min) {
+        startCoords.y = COORD_Y.min + 'px';
+        return startCoords.y;
       }
 
       window.pin.mainPin.style.top = (window.pin.mainPin.offsetTop - shift.y) + 'px';
@@ -209,4 +214,17 @@
     // getTimeIn();
     timein.value = timeout.value;
   });
+
+  form.addEventListener('submit', function (evt) {
+    window.request.upload(new FormData(form), window.request.uploadSuccessHandler, window.request.uploadErrorHandler);
+    evt.preventDefault();
+  });
+
+  window.form = {
+    form: form,
+    MAIN_PIN_X_ACTIVE: MAIN_PIN_X_ACTIVE,
+    MAIN_PIN_Y_ACTIVE: MAIN_PIN_X_ACTIVE,
+    getAddress: getAddress
+  };
+
 })();

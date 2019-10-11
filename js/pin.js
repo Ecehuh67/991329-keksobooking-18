@@ -18,7 +18,7 @@
 
     accomodationElement.style.left = accomodation.location.x - MAP_PIN_X / 2 + 'px';
     accomodationElement.style.top = accomodation.location.y - MAP_PIN_Y + 'px';
-    accomodationElement.querySelector('img').setAttribute('src', accomodation.author);
+    accomodationElement.querySelector('img').setAttribute('src', accomodation.author.avatar);
     accomodationElement.querySelector('img').setAttribute('alt', accomodation.offer.title);
 
     //
@@ -28,23 +28,18 @@
         popup.parentNode.removeChild(popup);
       }
 
-      window.advert.advert.appendChild(window.advert.renderAdvert(accomodation));
-      map.insertBefore(window.advert.advert, map.querySelector('.map__filters-container'));
+      var advert = document.createDocumentFragment();
+      advert.appendChild(window.advert.renderAdvert(accomodation));
+      map.insertBefore(advert, map.querySelector('.map__filters-container'));
+
     });
 
     return accomodationElement;
   };
 
-  // Создаем буфер куда будем временно копировать маркеры карты
-  var fragment = document.createDocumentFragment();
-
-  // Копируем метки в буфер
-  for (var i = 0; i < window.data.accomodations.length; i++) {
-    fragment.appendChild(renderAccomodation(window.data.accomodations[i]));
-  }
 
   window.pin = {
-    fragment: fragment,
+    renderAccomodation: renderAccomodation,
     map: map,
     mainPin: mainPin,
     mapPins: mapPins,
