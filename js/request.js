@@ -150,7 +150,15 @@
 
     // Find main pin and set it into the first position
     window.pin.mainPin.setAttribute('style', 'left: 570px; top: 375px;');
-    window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
+    window.form.getAddress(window.form.MAIN_PIN_X, window.form.MAIN_PIN_Y);
+
+    // Return form to an initial view
+    window.pin.map.classList.add('map--faded');
+    window.form.form.classList.add('ad-form--disabled');
+    var advertFieldset = window.form.form.querySelectorAll('fieldset');
+    advertFieldset.forEach(function (advert) {
+      advert.setAttribute('disabled', 'disabled');
+    });
 
     // Find an advert and delete it
     var advert = window.pin.map.querySelector('.map__card');
@@ -161,6 +169,16 @@
     for (var j = 1; j < pins.length; j++) {
       pins[j].parentNode.removeChild(pins[j]);
     }
+
+    // Create a handler for activating form again
+    var onMapPinClick = function () {
+      window.form.mousedown(advertFieldset);
+      window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
+      window.pin.mainPin.removeEventListener('click', onMapPinClick);
+    };
+
+    // put the handler on the main pin
+    window.pin.mainPin.addEventListener('click', onMapPinClick);
   };
 
   window.request = {
