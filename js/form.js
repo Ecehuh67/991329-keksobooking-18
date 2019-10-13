@@ -155,6 +155,7 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+
   });
 
   // Find list of options of rooms
@@ -224,7 +225,10 @@
     form: form,
     MAIN_PIN_X_ACTIVE: MAIN_PIN_X_ACTIVE,
     MAIN_PIN_Y_ACTIVE: MAIN_PIN_X_ACTIVE,
-    getAddress: getAddress
+    MAIN_PIN_X: MAIN_PIN_X,
+    MAIN_PIN_Y: MAIN_PIN_Y,
+    getAddress: getAddress,
+    mousedown: mousedown
   };
 
 })();
