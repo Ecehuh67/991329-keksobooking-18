@@ -46,11 +46,11 @@
   // Create function to set address in a form
   var getAddress = function (pinX, pinY) {
     var addressInput = document.querySelector('#address');
-    var pointX = Math.round(parseInt(window.pin.mainPin.style.left, 10) + pinX / 2);
+    var pointX = Math.round(parseInt(window.render.mainPin.style.left, 10) + pinX / 2);
     if (pinY === MAIN_PIN_Y) {
-      var pointY = Math.round(parseInt(window.pin.mainPin.style.top, 10) + pinY / 2);
+      var pointY = Math.round(parseInt(window.render.mainPin.style.top, 10) + pinY / 2);
     } else {
-      pointY = Math.round(parseInt(window.pin.mainPin.style.top, 10) + pinY);
+      pointY = Math.round(parseInt(window.render.mainPin.style.top, 10) + pinY);
     }
     addressInput.setAttribute('value', pointX + ', ' + pointY);
   };
@@ -65,15 +65,15 @@
       objectItem.removeAttribute('disabled', 'disabled');
     }
     // Render pins on the map from server data
-    var server = window.request;
-    server.load(server.successHandler, server.errorHandler);
+    var server = window.filter;
+    window.request.load(server.successHandler, server.errorHandler);
 
     // Render advert on the map from buffer
     /* window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));*/
 
-    window.pin.map.classList.remove('map--faded');
+    window.render.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-    window.pin.mainPin.removeEventListener('click', activeForm);
+    window.render.mainPin.removeEventListener('click', activeForm);
     isActive = true;
     return isActive;
   };
@@ -88,14 +88,14 @@
     if (evt.keyCode === window.util.ENT_CODE) {
       mousedown(advertFieldset);
       getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
-      window.pin.mainPin.removeEventListener('keydown', onMapPinEnterPress);
+      window.render.mainPin.removeEventListener('keydown', onMapPinEnterPress);
     }
   };
 
   // Put a handler on the major pin for keydownn
-  window.pin.mainPin.addEventListener('keydown', onMapPinEnterPress);
+  window.render.mainPin.addEventListener('keydown', onMapPinEnterPress);
 
-  window.pin.mainPin.addEventListener('mousedown', function (evt) {
+  window.render.mainPin.addEventListener('mousedown', function (evt) {
 
     if (!isActive) {
       mousedown(advertFieldset);
@@ -119,26 +119,26 @@
         y: moveEvt.clientY
       };
 
-      if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
+      if (window.render.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
         startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
         return startCoords.x;
 
-      } else if (window.pin.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.pin.map.clientWidth) {
-        startCoords.x = window.pin.map.clientWidth + 'px';
+      } else if (window.render.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.render.map.clientWidth) {
+        startCoords.x = window.pin.render.clientWidth + 'px';
         return startCoords.x;
       }
 
-      if (window.pin.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE > COORD_Y.max) {
+      if (window.render.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE > COORD_Y.max) {
         startCoords.y = COORD_Y.max + 'px';
         return startCoords.y;
 
-      } else if (window.pin.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE / 2 < COORD_Y.min) {
+      } else if (window.render.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE / 2 < COORD_Y.min) {
         startCoords.y = COORD_Y.min + 'px';
         return startCoords.y;
       }
 
-      window.pin.mainPin.style.top = (window.pin.mainPin.offsetTop - shift.y) + 'px';
-      window.pin.mainPin.style.left = (window.pin.mainPin.offsetLeft - shift.x) + 'px';
+      window.render.mainPin.style.top = (window.render.mainPin.offsetTop - shift.y) + 'px';
+      window.render.mainPin.style.left = (window.render.mainPin.offsetLeft - shift.x) + 'px';
 
       return '1'; // eslint error
     };
