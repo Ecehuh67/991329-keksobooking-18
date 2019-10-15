@@ -5,27 +5,24 @@
   var pins = [];
 
   var updatePins = function () {
-    window.render.render(pins.slice().filter(function (pins) {
-      return pins.offer.type === typeOfAccomodation;
-    }));
-
-    console.log(pins.slice().filter(function (pins) {
+    if (typeOfAccomodation === 'any') {
+      window.render.render(pins);
+    } else {
+      window.render.render(pins.slice().filter(function (pins) {
         return pins.offer.type === typeOfAccomodation;
       }));
-
-      //m
+    }
   };
 
   window.pin.onAccomodationChange = function (type) {
     typeOfAccomodation = type;
     updatePins();
-  }
+  };
 
   // Callback for rendering pins from server data
   var successHandler = function (data) {
     pins = data;
-    updatePins();
-    //window.render.render(data);
+    window.render.render(data);
 
     // Создаем буфер куда будем временно копировать объявления
     var advert = document.createDocumentFragment();
@@ -60,6 +57,6 @@
   window.filter = {
     successHandler: successHandler,
     errorHandler: errorHandler
-  }
+  };
 
 }());

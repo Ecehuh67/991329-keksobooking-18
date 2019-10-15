@@ -41,7 +41,7 @@
     // Создаем буфер куда будем временно копировать маркеры карты
     var fragment = document.createDocumentFragment();
 
-    var takeNumver = data.length > 5 ? 5 : data;
+    var takeNumver = data.length > 5 ? 5 : data.length;
     // Копируем метки в буфер
     for (var i = 0; i < takeNumver; i++) {
       fragment.appendChild(renderAccomodation(data[i]));
@@ -51,7 +51,7 @@
     mapPins.appendChild(mainPin);
     // Render pins on the map from buffer
     mapPins.appendChild(fragment);
-  }
+  };
 
 
   window.render = {
