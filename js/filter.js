@@ -8,8 +8,8 @@
     if (typeOfAccomodation === 'any') {
       window.render.render(pins);
     } else {
-      window.render.render(pins.slice().filter(function (pins) {
-        return pins.offer.type === typeOfAccomodation;
+      window.render.render(pins.slice().filter(function (pin) {
+        return pin.offer.type === typeOfAccomodation;
       }));
     }
   };
