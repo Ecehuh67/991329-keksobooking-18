@@ -4,7 +4,9 @@
   var typeOfAccomodation;
   var pins = [];
   var temporary = [];
+  var temp3 = [];
   var isActive = false;
+  var isTheSame = false;
   var price;
   var rooms;
   var prices = {
@@ -46,8 +48,7 @@
   // };
 
   window.pin.onAccomodationChange = function (type) {
-    console.log(isActive);
-    if (isActive) {
+    if (isActive && !isTheSame) {
       console.log('active');
       if (type === 'any') {
         temporary = temporary;
@@ -55,10 +56,17 @@
         temporary = temporary.filter(function (pin) {
           return pin.offer.type === type;
         });
-        console.log(temporary);
+        isTheSame = true;
+      }
+    } else if (isActive && isTheSame) {
+      if (type === 'any') {
+        temporary = pins;
+      } else {
+        temporary = temp3.filter(function (pin) {
+          return pin.offer.type === type;
+        });
       }
     } else {
-      console.log('noactive');
       if (type === 'any') {
         temporary = pins;
       } else {
@@ -72,17 +80,26 @@
   };
 
   window.pin.onRoomsChange = function (room) {
-    if (isActive) {
-      if (type === 'any') {
+    if (isActive && !isTheSame) {
+      console.log('active');
+      if (room === 'any') {
         temporary = temporary;
       } else {
         temporary = temporary.filter(function (pin) {
           return pin.offer.rooms == room;
         });
-        console.log(temporary);
+        isTheSame = true;
+      }
+    } else if (isActive && isTheSame) {
+      if (room === 'any') {
+        temporary = pins;
+      } else {
+        temporary = temp3.filter(function (pin) {
+          return pin.offer.rooms == room;
+        });
       }
     } else {
-      if (type === 'any') {
+      if (room === 'any') {
         temporary = pins;
       } else {
         temporary = pins.filter(function (pin) {
@@ -98,6 +115,7 @@
   var successHandler = function (data) {
     pins = data;
     temporary = pins;
+    temp3 = pins;
 
     // Создаем буфер куда будем временно копировать объявления
     var advert = document.createDocumentFragment();
