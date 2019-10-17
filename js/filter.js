@@ -4,6 +4,7 @@
   var typeOfAccomodation;
   var pins = [];
   var temporary = [];
+  var isActive = false;
   var price;
   var rooms;
   var prices = {
@@ -30,33 +31,65 @@
   };
 
   var updatePins = function () {
-    //console.log(temporary);
     window.render.render(temporary);
   };
 
+  // window.pin.onAccomodationChange = function (type) {
+  //   if (type === 'any') {
+  //     temporary = temporary;
+  //   } else {
+  //     temporary = temporary.filter(function (pin) {
+  //       return pin.offer.type === type;
+  //     });
+  //   }
+  //   updatePins();
+  // };
+
   window.pin.onAccomodationChange = function (type) {
-    if (type === 'any') {
-      temporary = pins;
+    console.log(isActive);
+    if (isActive) {
+      console.log('active');
+      if (type === 'any') {
+        temporary = temporary;
+      } else {
+        temporary = temporary.filter(function (pin) {
+          return pin.offer.type === type;
+        });
+        console.log(temporary);
+      }
     } else {
-      temporary = pins.filter(function (pin) {
-        return pin.offer.type === type;
-      });
+      console.log('noactive');
+      if (type === 'any') {
+        temporary = pins;
+      } else {
+        temporary = pins.filter(function (pin) {
+          return pin.offer.type === type;
+        });
+      }
+      isActive = true;
     }
     updatePins();
   };
 
-  // window.pin.onPriceChange = function (amount) {
-  //
-  //   updatePins();
-  // };
-
   window.pin.onRoomsChange = function (room) {
-    if (room === 'any') {
-      temporary = pins;
+    if (isActive) {
+      if (type === 'any') {
+        temporary = temporary;
+      } else {
+        temporary = temporary.filter(function (pin) {
+          return pin.offer.rooms == room;
+        });
+        console.log(temporary);
+      }
     } else {
-      temporary = pins.filter(function (pin) {
-        return pin.offer.rooms == room;
-      });
+      if (type === 'any') {
+        temporary = pins;
+      } else {
+        temporary = pins.filter(function (pin) {
+          return pin.offer.rooms == room;
+        });
+      }
+      isActive = true;
     }
     updatePins();
   };
