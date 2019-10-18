@@ -1,30 +1,28 @@
 'use strict';
 
 (function () {
-  var typeOfAccomodation;
   var pins = [];
-  var temporary = [];
-  var temp3 = [];
-  var isActive = false;
-  var isTheSame = false;
-  var price;
-  var rooms;
+  var filters = {
+    type: 'any',
+    rooms: 'any',
+    guests: 'any',
+    price: 'any'
+  };
   var prices = {
-    'any': 0,
     'middle': {
       min: 10000,
       max: 50000
     },
-    'low': 10000,
+    'low': 9999,
     'high': 50000
   };
 
 
   var getRangePrice = function (cost) {
     var typeOfPrice;
-     if (cost < prices.low ) {
+    if (cost <= prices.low) {
       typeOfPrice = 'low';
-    } else if (cost > prices.middle.min && cost < prices.middle.max) {
+    } else if (cost >= prices.middle.min && cost <= prices.middle.max) {
       typeOfPrice = 'middle';
     } else if (cost > prices.high) {
       typeOfPrice = 'high';
@@ -32,139 +30,60 @@
     return typeOfPrice;
   };
 
+  window.pin.onAccomodationChange = function (type) {
+    filters.type = type;
+    updatePins();
+  };
+
+  window.pin.onRoomsChange = function (room) {
+    filters.rooms = room;
+    updatePins();
+  };
+
+  window.pin.onGuestsChange = function (guest) {
+    filters.guests = guest;
+    updatePins();
+  };
+
+  window.pin.onPriceChange = function (guest) {
+    filters.price = guest;
+    updatePins();
+  };
+
   var updatePins = function () {
-    console.log(temporary);
+    var temporary = pins.filter(function (pin) {
+      if (filters.type === 'any') {
+        return pin;
+      } else {
+        return pin.offer.type === filters.type;
+      }
+    }).filter(function (pin) {
+      if (filters.rooms === 'any') {
+        return pin;
+      } else {
+        return pin.offer.rooms === +filters.rooms;
+      }
+    }).filter(function (pin) {
+      if (filters.guests === 'any') {
+        return pin;
+      } else {
+        return pin.offer.guests === +filters.guests;
+      }
+    }).filter(function (pin) {
+      var nameOfRange = getRangePrice(pin.offer.price);
+      if (filters.price === 'any') {
+        return pin;
+      } else {
+        return nameOfRange === filters.price;
+      }
+    });
     window.render.render(temporary);
   };
-
-  var typeChange = function (room) {
-    window.pin.onAccomodationChange = function (type) {
-      if (type === 'any') {
-        temporary = room;
-      } else {
-        temporary = room.filter(function (pin) {
-          return pin.offer.type === type;
-        });
-      }
-      updatePins();
-    };
-  };
-
-  var roomsChange = function (type) {
-    window.pin.onRoomsChange = function (room) {
-      if (room === 'any') {
-        temporary = type;
-      } else {
-        temporary = type.filter(function (pin) {
-          return pin.offer.rooms == room;
-        });
-      }
-      updatePins();
-    };
-  };
-
-  window.pin.onAccomodationChange = function (type) {
-    if (type === 'any') {
-      temporary = pins;
-    } else {
-      temporary = pins.filter(function (pin) {
-        return pin.offer.type === type;
-      });
-    }
-    var typed = temporary;
-    roomsChange(typed);
-    updatePins();
-  };
-
-  window.pin.onRoomsChange = function(room) {
-    if (!isActive) {
-      if (room === 'any') {
-        temporary = pins;
-        isActive = true;
-      } else {
-        temporary = pins.filter(function (pin) {
-          return pin.offer.rooms == room;
-        });
-      }
-    } else {
-      roomChange();
-    }
-    var roomed = temporary;
-    typeChange(roomed);
-    updatePins();
-  };
-
-
-
-  // window.pin.onAccomodationChange = function (type) {
-  //   if (isActive && !isTheSame) {
-  //     console.log('active');
-  //     if (type === 'any') {
-  //       temporary = temporary;
-  //     } else {
-  //       temporary = temporary.filter(function (pin) {
-  //         return pin.offer.type === type;
-  //       });
-  //       isTheSame = true;
-  //     }
-  //   } else if (isActive && isTheSame) {
-  //     if (type === 'any') {
-  //       temporary = pins;
-  //     } else {
-  //       temporary = temp3.filter(function (pin) {
-  //         return pin.offer.type === type;
-  //       });
-  //     }
-  //   } else {
-  //     if (type === 'any') {
-  //       temporary = pins;
-  //     } else {
-  //       temporary = pins.filter(function (pin) {
-  //         return pin.offer.type === type;
-  //       });
-  //     }
-  //     isActive = true;
-  //   }
-  //   updatePins();
-  // };
-
-  // window.pin.onRoomsChange = function (room) {
-  //   if (isActive && !isTheSame) {
-  //     console.log('active');
-  //     if (room === 'any') {
-  //       temporary = temporary;
-  //     } else {
-  //       temporary = temporary.filter(function (pin) {
-  //         return pin.offer.rooms == room;
-  //       });
-  //       isTheSame = true;
-  //     }
-  //   } else if (isActive && isTheSame) {
-  //     if (room === 'any') {
-  //       temporary = pins;
-  //     } else {
-  //       temporary = temp3.filter(function (pin) {
-  //         return pin.offer.rooms == room;
-  //       });
-  //     }
-  //   } else {
-  //     if (room === 'any') {
-  //       temporary = pins;
-  //     } else {
-  //       temporary = pins.filter(function (pin) {
-  //         return pin.offer.rooms == room;
-  //       });
-  //     }
-  //     isActive = true;
-  //   }
-  //   updatePins();
-  // };
 
   // Callback for rendering pins from server data
   var successHandler = function (data) {
     pins = data;
-    temporary = pins;
-    temp3 = pins;
+    window.render.render(pins);
 
     // Создаем буфер куда будем временно копировать объявления
     var advert = document.createDocumentFragment();
