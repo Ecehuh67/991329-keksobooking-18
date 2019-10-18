@@ -15,6 +15,14 @@
   var guests = document.querySelector('#housing-guests');
   var features = document.querySelector('#housing-features');
 
+  var filters = {
+    typeOfHouse: typeOfHouse.value,
+    price: price.value,
+    rooms: rooms.value,
+    guests: guests.value,
+    features: features.value
+  };
+
   typeOfHouse.addEventListener('change', function (evt) {
     var value = evt.target.value;
     pin.onAccomodationChange(value);
@@ -37,5 +45,6 @@
   });
 
   window.pin = pin;
+  window.filters = filters;
 
 }());

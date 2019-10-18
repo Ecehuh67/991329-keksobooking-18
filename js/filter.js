@@ -33,77 +33,132 @@
   };
 
   var updatePins = function () {
+    console.log(temporary);
     window.render.render(temporary);
   };
 
-  window.pin.onAccomodationChange = function (type) {
+  var typeChange = function (room) {
+    window.pin.onAccomodationChange = function (type) {
+      if (type === 'any') {
+        temporary = room;
+      } else {
+        temporary = room.filter(function (pin) {
+          return pin.offer.type === type;
+        });
+      }
+      updatePins();
+    };
+  };
 
-    updatePins();
+  var roomsChange = function (type) {
+    window.pin.onRoomsChange = function (room) {
+      if (room === 'any') {
+        temporary = type;
+      } else {
+        temporary = type.filter(function (pin) {
+          return pin.offer.rooms == room;
+        });
+      }
+      updatePins();
+    };
   };
 
   window.pin.onAccomodationChange = function (type) {
-    if (isActive && !isTheSame) {
-      console.log('active');
-      if (type === 'any') {
-        temporary = temporary;
-      } else {
-        temporary = temporary.filter(function (pin) {
-          return pin.offer.type === type;
-        });
-        isTheSame = true;
-      }
-    } else if (isActive && isTheSame) {
-      if (type === 'any') {
-        temporary = pins;
-      } else {
-        temporary = temp3.filter(function (pin) {
-          return pin.offer.type === type;
-        });
-      }
+    if (type === 'any') {
+      temporary = pins;
     } else {
-      if (type === 'any') {
-        temporary = pins;
-      } else {
-        temporary = pins.filter(function (pin) {
-          return pin.offer.type === type;
-        });
-      }
-      isActive = true;
+      temporary = pins.filter(function (pin) {
+        return pin.offer.type === type;
+      });
     }
+    var typed = temporary;
+    roomsChange(typed);
     updatePins();
   };
 
-  window.pin.onRoomsChange = function (room) {
-    if (isActive && !isTheSame) {
-      console.log('active');
-      if (room === 'any') {
-        temporary = temporary;
-      } else {
-        temporary = temporary.filter(function (pin) {
-          return pin.offer.rooms == room;
-        });
-        isTheSame = true;
-      }
-    } else if (isActive && isTheSame) {
+  window.pin.onRoomsChange = function(room) {
+    if (!isActive) {
       if (room === 'any') {
         temporary = pins;
-      } else {
-        temporary = temp3.filter(function (pin) {
-          return pin.offer.rooms == room;
-        });
-      }
-    } else {
-      if (room === 'any') {
-        temporary = pins;
+        isActive = true;
       } else {
         temporary = pins.filter(function (pin) {
           return pin.offer.rooms == room;
         });
       }
-      isActive = true;
+    } else {
+      roomChange();
     }
+    var roomed = temporary;
+    typeChange(roomed);
     updatePins();
   };
+
+
+
+  // window.pin.onAccomodationChange = function (type) {
+  //   if (isActive && !isTheSame) {
+  //     console.log('active');
+  //     if (type === 'any') {
+  //       temporary = temporary;
+  //     } else {
+  //       temporary = temporary.filter(function (pin) {
+  //         return pin.offer.type === type;
+  //       });
+  //       isTheSame = true;
+  //     }
+  //   } else if (isActive && isTheSame) {
+  //     if (type === 'any') {
+  //       temporary = pins;
+  //     } else {
+  //       temporary = temp3.filter(function (pin) {
+  //         return pin.offer.type === type;
+  //       });
+  //     }
+  //   } else {
+  //     if (type === 'any') {
+  //       temporary = pins;
+  //     } else {
+  //       temporary = pins.filter(function (pin) {
+  //         return pin.offer.type === type;
+  //       });
+  //     }
+  //     isActive = true;
+  //   }
+  //   updatePins();
+  // };
+
+  // window.pin.onRoomsChange = function (room) {
+  //   if (isActive && !isTheSame) {
+  //     console.log('active');
+  //     if (room === 'any') {
+  //       temporary = temporary;
+  //     } else {
+  //       temporary = temporary.filter(function (pin) {
+  //         return pin.offer.rooms == room;
+  //       });
+  //       isTheSame = true;
+  //     }
+  //   } else if (isActive && isTheSame) {
+  //     if (room === 'any') {
+  //       temporary = pins;
+  //     } else {
+  //       temporary = temp3.filter(function (pin) {
+  //         return pin.offer.rooms == room;
+  //       });
+  //     }
+  //   } else {
+  //     if (room === 'any') {
+  //       temporary = pins;
+  //     } else {
+  //       temporary = pins.filter(function (pin) {
+  //         return pin.offer.rooms == room;
+  //       });
+  //     }
+  //     isActive = true;
+  //   }
+  //   updatePins();
+  // };
 
   // Callback for rendering pins from server data
   var successHandler = function (data) {
