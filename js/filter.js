@@ -36,16 +36,10 @@
     window.render.render(temporary);
   };
 
-  // window.pin.onAccomodationChange = function (type) {
-  //   if (type === 'any') {
-  //     temporary = temporary;
-  //   } else {
-  //     temporary = temporary.filter(function (pin) {
-  //       return pin.offer.type === type;
-  //     });
-  //   }
-  //   updatePins();
-  // };
+  window.pin.onAccomodationChange = function (type) {
+
+    updatePins();
+  };
 
   window.pin.onAccomodationChange = function (type) {
     if (isActive && !isTheSame) {
