@@ -1,13 +1,18 @@
 'use strict';
 
 (function () {
+
+  // Copy data which was got from the server
   var pins = [];
   var filters = {
     type: 'any',
     rooms: 'any',
     guests: 'any',
-    price: 'any'
+    price: 'any',
+    features: []
   };
+
+  // Create a dictionary for getting a range of price
   var prices = {
     'middle': {
       min: 10000,
@@ -17,7 +22,7 @@
     'high': 50000
   };
 
-
+  // Create a function to get a name of a range of a price
   var getRangePrice = function (cost) {
     var typeOfPrice;
     if (cost <= prices.low) {
@@ -30,26 +35,48 @@
     return typeOfPrice;
   };
 
-  window.pin.onAccomodationChange = function (type) {
+  // Create a function for comparing features from list to pins
+  var findOutFeatures = function (listOfFeatures, range) {
+    var count = 0;
+    for (var k = 0; k < listOfFeatures.length; k++) {
+      if (range.offer.features.indexOf(listOfFeatures[k])) {
+        count += 1;
+      }
+    }
+    if (count === listOfFeatures.length) {
+      return count;
+    } else {
+      return 0;
+    }
+  };
+
+  // Call the callbacks functions
+  window.pin.onAccomodationChange = window.debounce(function (type) {
     filters.type = type;
     updatePins();
-  };
+  });
 
-  window.pin.onRoomsChange = function (room) {
+  window.pin.onRoomsChange = window.debounce(function (room) {
     filters.rooms = room;
     updatePins();
-  };
+  });
 
-  window.pin.onGuestsChange = function (guest) {
+  window.pin.onGuestsChange = window.debounce(function (guest) {
     filters.guests = guest;
     updatePins();
-  };
+  });
 
-  window.pin.onPriceChange = function (guest) {
-    filters.price = guest;
+  window.pin.onPriceChange = window.debounce(function (price) {
+    filters.price = price;
     updatePins();
-  };
+  });
 
+  window.pin.onFeaturesChange = window.debounce(function () {
+    filters.features = window.data;
+    updatePins();
+  });
+
+  // Create a function for filtering pins according to chosen filters and render them
   var updatePins = function () {
     var temporary = pins.filter(function (pin) {
       if (filters.type === 'any') {
@@ -75,6 +102,14 @@
         return pin;
       } else {
         return nameOfRange === filters.price;
+      }
+    }).filter(function (pin) {
+      if (filters.features.length === 0) {
+        return pin;
+      } else if (findOutFeatures(filters.features, pin) > 0) {
+        return pin;
+      } else {
+        return 0;
       }
     });
     window.render.render(temporary);
