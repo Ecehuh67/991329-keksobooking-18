@@ -12,6 +12,24 @@
     .content.
   querySelector('.map__pin'); //  Ищем контент шаблона пина для карты
 
+  var deleteAdvert = function () {
+    var popup = document.querySelector('.map__card');
+    if (popup) {
+      popup.parentNode.removeChild(popup);
+    }
+  };
+
+  // Put a handler on mainPin to make it actived
+  mainPin.addEventListener('click', function () {
+    var activePin = document.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+    mainPin.classList.add('map__pin--active');
+
+    deleteAdvert();
+  });
+
   // Создаем метку на карте созгласно шаблона
   var renderAccomodation = function (accomodation) {
     var accomodationElement = accomodationTemplate.cloneNode(true);
@@ -23,11 +41,13 @@
 
     //
     accomodationElement.addEventListener('click', function () {
-      accomodationElement.classList.add('map__pin--active');
-      var popup = document.querySelector('.map__card');
-      if (popup) {
-        popup.parentNode.removeChild(popup);
+      var activePin = document.querySelector('.map__pin--active');
+      if (activePin) {
+        activePin.classList.remove('map__pin--active');
       }
+      accomodationElement.classList.add('map__pin--active');
+
+      deleteAdvert();
 
       var advert = document.createDocumentFragment();
       advert.appendChild(window.advert.renderAdvert(accomodation));
@@ -60,6 +80,7 @@
     map: map,
     mainPin: mainPin,
     mapPins: mapPins,
-    render: render
+    render: render,
+    deleteAdvert: deleteAdvert
   };
 })();

@@ -31,11 +31,9 @@
 
   // Find form to ban fieldset be edited
   var advertFieldset = form.querySelectorAll('fieldset');
-  var features = document.querySelector('#housing-features');
+  // var features = document.querySelector('#housing-features');
   var filters = document.querySelectorAll('.map__filters select');
   var featuresList = document.querySelector('#housing-features');
-
-
 
   // Create a function for setting 'disabled' on fields of the form
   var setOptionDisabled = function (object) {
@@ -50,7 +48,7 @@
       var objectItem = data[k];
       objectItem.removeAttribute('disabled', 'disabled');
     }
-  }
+  };
 
   // Set 'disabled' on each fieldset of the form
   setOptionDisabled(advertFieldset);

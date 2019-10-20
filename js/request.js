@@ -57,7 +57,6 @@
 
     // Create callback to delete message by click
     var onFormErrorButton = function () {
-      console.log('click');
       messageError.parentNode.removeChild(messageError);
       document.removeEventListener('click', onFormErrorButton);
       document.removeEventListener('keydown', onFormErrorEscapePress);
@@ -65,7 +64,6 @@
 
     // Create callback to delete message by press Escape
     var onFormErrorEscapePress = function (evt) {
-      console.log('esc');
       if (evt.keyCode === window.util.ECS_CODE) {
         messageError.parentNode.removeChild(messageError);
         document.removeEventListener('keydown', onFormErrorEscapePress);

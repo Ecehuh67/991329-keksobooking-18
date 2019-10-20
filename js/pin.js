@@ -21,6 +21,7 @@
 
   // Put a handler on inputs of features
   features.addEventListener('change', function (evt) {
+    window.render.deleteAdvert();
     var value = evt.target.value;
 
     // Define is there a feature in the list or not. If not add it
@@ -34,18 +35,22 @@
 
   // Put handlers on selects of the filter
   typeOfHouse.addEventListener('change', function (evt) {
+    window.render.deleteAdvert();
     var value = evt.target.value;
     pin.onAccomodationChange(value);
   });
   price.addEventListener('change', function (evt) {
+    window.render.deleteAdvert();
     var value = evt.target.value;
     pin.onPriceChange(value);
   });
   rooms.addEventListener('change', function (evt) {
+    window.render.deleteAdvert();
     var value = evt.target.value;
     pin.onRoomsChange(value);
   });
   guests.addEventListener('change', function (evt) {
+    window.render.deleteAdvert();
     var value = evt.target.value;
     pin.onGuestsChange(value);
   });
