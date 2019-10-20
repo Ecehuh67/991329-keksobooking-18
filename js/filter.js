@@ -120,14 +120,14 @@
     pins = data;
     window.render.render(pins);
 
-    // Создаем буфер куда будем временно копировать объявления
-    var advert = document.createDocumentFragment();
-
-    // Копируем объявление в буфер
-    advert.appendChild(window.advert.renderAdvert(data[0]));
-
-    // Render advert on the map from buffer
-    window.render.map.insertBefore(advert, window.render.map.querySelector('.map__filters-container'));
+    // // Создаем буфер куда будем временно копировать объявления
+    // var advert = document.createDocumentFragment();
+    //
+    // // Копируем объявление в буфер
+    // advert.appendChild(window.advert.renderAdvert(data[0]));
+    //
+    // // Render advert on the map from buffer
+    // window.render.map.insertBefore(advert, window.render.map.querySelector('.map__filters-container'));
 
   };
 

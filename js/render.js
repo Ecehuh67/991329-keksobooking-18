@@ -23,6 +23,7 @@
 
     //
     accomodationElement.addEventListener('click', function () {
+      accomodationElement.classList.add('map__pin--active');
       var popup = document.querySelector('.map__card');
       if (popup) {
         popup.parentNode.removeChild(popup);

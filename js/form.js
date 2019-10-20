@@ -31,6 +31,11 @@
 
   // Find form to ban fieldset be edited
   var advertFieldset = form.querySelectorAll('fieldset');
+  var features = document.querySelector('#housing-features');
+  var filters = document.querySelectorAll('.map__filters select');
+  var featuresList = document.querySelector('#housing-features');
+
+
 
   // Create a function for setting 'disabled' on fields of the form
   var setOptionDisabled = function (object) {
@@ -40,8 +45,17 @@
     }
   };
 
+  var deleteOptionDisabled = function (data) {
+    for (var k = 0; k < data.length; k++) {
+      var objectItem = data[k];
+      objectItem.removeAttribute('disabled', 'disabled');
+    }
+  }
+
   // Set 'disabled' on each fieldset of the form
   setOptionDisabled(advertFieldset);
+  setOptionDisabled(filters);
+  featuresList.setAttribute('disabled', 'disabled');
 
   // Create function to set address in a form
   var getAddress = function (pinX, pinY) {
@@ -64,6 +78,11 @@
       var objectItem = object[k];
       objectItem.removeAttribute('disabled', 'disabled');
     }
+
+    // Active filds of the filter
+    deleteOptionDisabled(filters);
+    featuresList.removeAttribute('disabled', 'disabled');
+
     // Render pins on the map from server data
     var server = window.filter;
     window.request.load(server.successHandler, server.errorHandler);
