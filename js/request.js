@@ -21,48 +21,6 @@
     xhr.send();
   };
 
-  // // Callback for rendering pins from server data
-  // var successHandler = function (pins) {
-  //   // Создаем буфер куда будем временно копировать маркеры карты
-  //   var fragment = document.createDocumentFragment();
-  //
-  //   // Копируем метки в буфер
-  //   for (var i = 0; i < pins.length; i++) {
-  //     fragment.appendChild(window.pin.renderAccomodation(pins[i]));
-  //   }
-  //
-  //   // Render pins on the map from buffer
-  //   window.pin.mapPins.appendChild(fragment);
-  //
-  //   // Создаем буфер куда будем временно копировать объявления
-  //   var advert = document.createDocumentFragment();
-  //
-  //   // Копируем объявление в буфер
-  //   advert.appendChild(window.advert.renderAdvert(pins[0]));
-  //
-  //   // Render advert on the map from buffer
-  //   window.pin.map.insertBefore(advert, window.pin.map.querySelector('.map__filters-container'));
-  //
-  // };
-  //
-  // // Callback for showing a error message if data isn't loaded from server
-  // var errorHandler = function () {
-  //
-  //   // Find pattern for rendering error message
-  //   var errorTemplate = document.querySelector('#error')
-  //   .content
-  //   .querySelector('.error');
-  //
-  //   var error = errorTemplate.cloneNode(true);
-  //
-  //   // Add the pattern in DOM
-  //   document.body.insertAdjacentElement('afterbegin', error);
-  //
-  //   // Delete ad which had rendered in first time
-  //   var firstAdvert = document.querySelector('.map__card');
-  //   firstAdvert.parentNode.removeChild(firstAdvert);
-  // };
-
   // URL for uploading data on a server
   var urlUpload = 'https://js.dump.academy/keksobooking';
 
@@ -101,6 +59,7 @@
     var onFormErrorButton = function () {
       messageError.parentNode.removeChild(messageError);
       document.removeEventListener('click', onFormErrorButton);
+      document.removeEventListener('keydown', onFormErrorEscapePress);
     };
 
     // Create callback to delete message by press Escape
@@ -108,6 +67,7 @@
       if (evt.keyCode === window.util.ECS_CODE) {
         messageError.parentNode.removeChild(messageError);
         document.removeEventListener('keydown', onFormErrorEscapePress);
+        document.removeEventListener('click', onFormErrorButton);
       }
     };
 
@@ -135,6 +95,7 @@
     var onFormSuccessWindow = function () {
       messageSuccess.parentNode.removeChild(messageSuccess);
       document.removeEventListener('click', onFormSuccessWindow);
+      document.removeEventListener('keydown', onFormSuccessEscapePress);
     };
 
     // Create callback to delete message by press Escape
@@ -142,6 +103,7 @@
       if (evt.keyCode === window.util.ECS_CODE) {
         messageSuccess.parentNode.removeChild(messageSuccess);
         document.removeEventListener('keydown', onFormSuccessEscapePress);
+        document.removeEventListener('click', onFormSuccessWindow);
       }
     };
 
@@ -149,11 +111,11 @@
     document.addEventListener('keydown', onFormSuccessEscapePress);
 
     // Find main pin and set it into the first position
-    window.pin.mainPin.setAttribute('style', 'left: 570px; top: 375px;');
+    window.render.mainPin.setAttribute('style', 'left: 570px; top: 375px;');
     window.form.getAddress(window.form.MAIN_PIN_X, window.form.MAIN_PIN_Y);
 
     // Return form to an initial view
-    window.pin.map.classList.add('map--faded');
+    window.render.map.classList.add('map--faded');
     window.form.form.classList.add('ad-form--disabled');
     var advertFieldset = window.form.form.querySelectorAll('fieldset');
     advertFieldset.forEach(function (advert) {
@@ -161,11 +123,11 @@
     });
 
     // Find an advert and delete it
-    var advert = window.pin.map.querySelector('.map__card');
+    var advert = window.render.map.querySelector('.map__card');
     advert.parentNode.removeChild(advert);
 
     // Find pins and delete them from map
-    var pins = window.pin.map.querySelectorAll('.map__pin');
+    var pins = window.render.map.querySelectorAll('.map__pin');
     for (var j = 1; j < pins.length; j++) {
       pins[j].parentNode.removeChild(pins[j]);
     }
@@ -174,11 +136,11 @@
     var onMapPinClick = function () {
       window.form.mousedown(advertFieldset);
       window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
-      window.pin.mainPin.removeEventListener('click', onMapPinClick);
+      window.render.mainPin.removeEventListener('click', onMapPinClick);
     };
 
     // put the handler on the main pin
-    window.pin.mainPin.addEventListener('click', onMapPinClick);
+    window.render.mainPin.addEventListener('click', onMapPinClick);
   };
 
   window.request = {
