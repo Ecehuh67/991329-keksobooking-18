@@ -19,15 +19,18 @@
     }
   };
 
-  // Put a handler on mainPin to make it actived
-  mainPin.addEventListener('click', function () {
+  var setActivePin = function (object) {
     var activePin = document.querySelector('.map__pin--active');
     if (activePin) {
       activePin.classList.remove('map__pin--active');
     }
-    mainPin.classList.add('map__pin--active');
+    object.classList.add('map__pin--active');
+  };
 
+  // Put a handler on mainPin to make it actived
+  mainPin.addEventListener('click', function () {
     deleteAdvert();
+    setActivePin(mainPin);
   });
 
   // Создаем метку на карте созгласно шаблона
@@ -39,20 +42,17 @@
     accomodationElement.querySelector('img').setAttribute('src', accomodation.author.avatar);
     accomodationElement.querySelector('img').setAttribute('alt', accomodation.offer.title);
 
-    //
-    accomodationElement.addEventListener('click', function () {
-      var activePin = document.querySelector('.map__pin--active');
-      if (activePin) {
-        activePin.classList.remove('map__pin--active');
-      }
-      accomodationElement.classList.add('map__pin--active');
-
-      deleteAdvert();
-
+    // Create a function to show an advert by clicking a pin
+    var showAdvert = function () {
       var advert = document.createDocumentFragment();
       advert.appendChild(window.advert.renderAdvert(accomodation));
       map.insertBefore(advert, map.querySelector('.map__filters-container'));
+    };
 
+    accomodationElement.addEventListener('click', function () {
+      deleteAdvert();
+      setActivePin(accomodationElement);
+      showAdvert();
     });
 
     return accomodationElement;

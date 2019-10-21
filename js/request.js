@@ -3,6 +3,9 @@
 (function () {
   var urlLoad = 'https://js.dump.academy/keksobooking/data';
 
+  // URL for uploading data on a server
+  var urlUpload = 'https://js.dump.academy/keksobooking';
+
   // Function for getting data from a server
   var load = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
@@ -20,9 +23,6 @@
 
     xhr.send();
   };
-
-  // URL for uploading data on a server
-  var urlUpload = 'https://js.dump.academy/keksobooking';
 
   // Create function which will be able to check status of loading data
   var upload = function (data, onSuccess, onError) {
@@ -47,7 +47,6 @@
     .content
     .querySelector('.error');
     var error = errorTemplate.cloneNode(true);
-    // var errorButton = error.querySelector('.error__button');
 
     // Add the pattern in DOM
     document.body.querySelector('main').insertAdjacentElement('afterbegin', error);
@@ -74,6 +73,9 @@
     // Add handlers on the form
     document.addEventListener('click', onFormErrorButton);
     document.addEventListener('keydown', onFormErrorEscapePress);
+
+    // Close an advert if it has been opened
+    window.render.deleteAdvert();
   };
 
   //
@@ -87,7 +89,6 @@
     document.body.querySelector('main').insertAdjacentElement('afterbegin', success);
 
     window.form.form.reset();
-
 
     var messageSuccess = document.body.querySelector('main .success');
 
@@ -122,9 +123,8 @@
       advert.setAttribute('disabled', 'disabled');
     });
 
-    // Find an advert and delete it
-    var advert = window.render.map.querySelector('.map__card');
-    advert.parentNode.removeChild(advert);
+    // Find an opened advert and close it
+    window.render.deleteAdvert();
 
     // Find pins and delete them from map
     var pins = window.render.map.querySelectorAll('.map__pin');

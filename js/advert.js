@@ -2,18 +2,20 @@
 'use strict';
 
 (function () {
-  var TRANSLATE_OF_ACCOMODATION = {// Словарь типов имущества
+  // Словарь типов имущества
+  var TRANSLATE_OF_ACCOMODATION = {
     bungalo: 'Бунгало',
     flat: 'Квартира',
     house: 'Дом',
     palace: 'Дворец'
   };
 
+  // Ищем шаблон обявления для пина карты
   var advertTemplate = document.querySelector('#card').
   content.
-  querySelector('.map__card'); // Ищем шаблон обявления для пина карты
+  querySelector('.map__card');
 
-  // Создаем объявление на карте из шаблона
+  // Create a function for rendering an advert
   var renderAdvert = function (advertisment) {
     var advertElement = advertTemplate.cloneNode(true);
     advertElement.querySelector('.popup__title').textContent = advertisment.offer.title;

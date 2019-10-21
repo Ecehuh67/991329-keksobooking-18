@@ -1,3 +1,5 @@
+// File pin.js
+
 'use strict';
 
 (function () {
@@ -55,7 +57,9 @@
     pin.onGuestsChange(value);
   });
 
-  window.pin = pin;
-  window.data = data;
+  window.pin = {
+    pin: pin,
+    data: data
+  };
 
 }());

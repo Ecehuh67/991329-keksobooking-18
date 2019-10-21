@@ -1,4 +1,5 @@
 // File main.js
+
 'use strict';
 (function () {
 
@@ -24,6 +25,7 @@
     3: [1, 2, 3],
     0: [0]
   };
+
   var ROOMS = [1, 2, 3, 0];
   var GUESTS = [3, 2, 1, 0];
 
@@ -70,28 +72,23 @@
   // Set address on the inactive map
   getAddress(MAIN_PIN_X, MAIN_PIN_Y);
 
-  // Create function for deleting 'disabled' from each fieldset of the form
+  // Create a function for deleting 'disabled' from each fieldset of the form
   var mousedown = function (object) {
-    for (var k = 0; k < object.length; k++) {
-      var objectItem = object[k];
-      objectItem.removeAttribute('disabled', 'disabled');
-    }
+    deleteOptionDisabled(object);
 
-    // Active filds of the filter
+    // Active fields of the filter
     deleteOptionDisabled(filters);
     featuresList.removeAttribute('disabled', 'disabled');
 
     // Render pins on the map from server data
     var server = window.filter;
     window.request.load(server.successHandler, server.errorHandler);
-
-    // Render advert on the map from buffer
-    /* window.pin.map.insertBefore(window.advert.advert, window.pin.map.querySelector('.map__filters-container'));*/
-
     window.render.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.render.mainPin.removeEventListener('click', activeForm);
+
     isActive = true;
+
     return isActive;
   };
 
@@ -115,7 +112,7 @@
   window.render.mainPin.addEventListener('mousedown', function (evt) {
 
     if (!isActive) {
-      mousedown(advertFieldset);
+      activeForm();
     }
 
     var startCoords = {
@@ -136,26 +133,29 @@
         y: moveEvt.clientY
       };
 
-      if (window.render.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
+      var offsetLeft = window.render.mainPin.offsetLeft;
+      var offsetTop = window.render.mainPin.offsetTop;
+
+      if (offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 < 0) {
         startCoords.x = '0px' + MAIN_PIN_X_ACTIVE;
         return startCoords.x;
 
-      } else if (window.render.mainPin.offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.render.map.clientWidth) {
+      } else if (offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.render.map.clientWidth) {
         startCoords.x = window.pin.render.clientWidth + 'px';
         return startCoords.x;
       }
 
-      if (window.render.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE > COORD_Y.max) {
+      if (offsetTop - shift.y + MAIN_PIN_Y_ACTIVE > COORD_Y.max) {
         startCoords.y = COORD_Y.max + 'px';
         return startCoords.y;
 
-      } else if (window.render.mainPin.offsetTop - shift.y + MAIN_PIN_Y_ACTIVE / 2 < COORD_Y.min) {
+      } else if (offsetTop - shift.y + MAIN_PIN_Y_ACTIVE / 2 < COORD_Y.min) {
         startCoords.y = COORD_Y.min + 'px';
         return startCoords.y;
       }
 
-      window.render.mainPin.style.top = (window.render.mainPin.offsetTop - shift.y) + 'px';
-      window.render.mainPin.style.left = (window.render.mainPin.offsetLeft - shift.x) + 'px';
+      window.render.mainPin.style.top = (offsetTop - shift.y) + 'px';
+      window.render.mainPin.style.left = (offsetLeft - shift.x) + 'px';
 
       return '1'; // eslint error
     };
@@ -179,8 +179,8 @@
   var selectRooms = document.querySelector('#room_number');
   var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
 
-  // Put disabled on list of guests to avoid bag with 1 room and 1 guest when the page
-  // will be opened without changing amount of rooms
+  // Put disabled on list of guests to avoid bag with 1 room and 1 guest when
+  // the page will be opened without changing amount of rooms
   setOptionDisabled(optionGuests);
 
   // Create a function to cansel disabled on option for choosing guests
@@ -202,16 +202,17 @@
     getAvailableGuests();
   });
 
-  // Find field of type of accomodation
+  // Find a field of type of accomodation
   var type = document.querySelector('#type');
 
   // Create a function for defining min price for type of accomodation
   var getMinPriceOfAccomodation = function () {
-    var typyOptions = type.querySelectorAll('option');
+    var typeOptions = type.querySelectorAll('option');
     var price = document.querySelector('#price');
     var index = type.selectedIndex;
-    price.setAttribute('min', MINPRICE_OF_ACCOMODATION[typyOptions[index].value]);
-    price.setAttribute('placeholder', MINPRICE_OF_ACCOMODATION[typyOptions[index].value]);
+    var minPrice = MINPRICE_OF_ACCOMODATION[typeOptions[index].value];
+    price.setAttribute('min', minPrice);
+    price.setAttribute('placeholder', minPrice);
   };
 
   // Put on a handler if type of accomodation is changed
@@ -225,11 +226,9 @@
 
   // Pun on handlers if timein/timeout are changed
   timein.addEventListener('change', function () {
-    // getTimeOut();
     timeout.value = timein.value;
   });
   timeout.addEventListener('change', function () {
-    // getTimeIn();
     timein.value = timeout.value;
   });
 

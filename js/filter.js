@@ -4,6 +4,8 @@
 
   // Copy data which was got from the server
   var pins = [];
+
+  // Create dictionary of filters which helps to sort pins on the map
   var filters = {
     type: 'any',
     rooms: 'any',
@@ -43,6 +45,7 @@
         count += 1;
       }
     }
+
     if (count === listOfFeatures.length) {
       return count;
     } else {
@@ -51,34 +54,34 @@
   };
 
   // Call the callbacks functions
-  window.pin.onAccomodationChange = window.debounce(function (type) {
+  window.pin.pin.onAccomodationChange = window.debounce(function (type) {
     filters.type = type;
     updatePins();
   });
 
-  window.pin.onRoomsChange = window.debounce(function (room) {
+  window.pin.pin.onRoomsChange = window.debounce(function (room) {
     filters.rooms = room;
     updatePins();
   });
 
-  window.pin.onGuestsChange = window.debounce(function (guest) {
+  window.pin.pin.onGuestsChange = window.debounce(function (guest) {
     filters.guests = guest;
     updatePins();
   });
 
-  window.pin.onPriceChange = window.debounce(function (price) {
+  window.pin.pin.onPriceChange = window.debounce(function (price) {
     filters.price = price;
     updatePins();
   });
 
-  window.pin.onFeaturesChange = window.debounce(function () {
-    filters.features = window.data;
+  window.pin.pin.onFeaturesChange = window.debounce(function () {
+    filters.features = window.pin.data;
     updatePins();
   });
 
   // Create a function for filtering pins according to chosen filters and render them
   var updatePins = function () {
-    var temporary = pins.filter(function (pin) {
+    var temporaryPins = pins.filter(function (pin) {
       if (filters.type === 'any') {
         return pin;
       } else {
@@ -112,23 +115,14 @@
         return 0;
       }
     });
-    window.render.render(temporary);
+
+    window.render.render(temporaryPins);
   };
 
   // Callback for rendering pins from server data
   var successHandler = function (data) {
     pins = data;
     window.render.render(pins);
-
-    // // Создаем буфер куда будем временно копировать объявления
-    // var advert = document.createDocumentFragment();
-    //
-    // // Копируем объявление в буфер
-    // advert.appendChild(window.advert.renderAdvert(data[0]));
-    //
-    // // Render advert on the map from buffer
-    // window.render.map.insertBefore(advert, window.render.map.querySelector('.map__filters-container'));
-
   };
 
   // Callback for showing a error message if data isn't loaded from server
@@ -143,10 +137,6 @@
 
     // Add the pattern in DOM
     document.body.insertAdjacentElement('afterbegin', error);
-
-    // Delete ad which had rendered in first time
-    var firstAdvert = document.querySelector('.map__card');
-    firstAdvert.parentNode.removeChild(firstAdvert);
   };
 
   window.filter = {
