@@ -34,6 +34,7 @@
     } else if (cost > prices.high) {
       typeOfPrice = 'high';
     }
+
     return typeOfPrice;
   };
 
@@ -45,7 +46,6 @@
         count += 1;
       }
     }
-
     if (count === listOfFeatures.length) {
       return count;
     } else {

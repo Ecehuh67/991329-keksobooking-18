@@ -21,6 +21,24 @@
   var guests = document.querySelector('#housing-guests');
   var features = document.querySelector('#housing-features');
 
+  // var filt = {
+  //   typeOfHouse: document.querySelector('#housing-type'),
+  //   price: document.querySelector('#housing-price'),
+  //   rooms: document.querySelector('#housing-rooms'),
+  //   guests: document.querySelector('#housing-guests'),
+  //   features: document.querySelector('#housing-features')
+  // };
+  //
+  // Object.keys(filt).forEach(function (el) {
+  //   eval(el).addEventListener('change', function (evt) {
+  //     window.render.deleteAdvert();
+  //     var value = evt.target.value;
+  //     console.log(value);
+
+  //  // как можно передать здесь value в pin??????
+  //   });
+  // });
+
   // Put a handler on inputs of features
   features.addEventListener('change', function (evt) {
     window.render.deleteAdvert();

@@ -33,7 +33,7 @@
 
   // Find form to ban fieldset be edited
   var advertFieldset = form.querySelectorAll('fieldset');
-  // var features = document.querySelector('#housing-features');
+
   var filters = document.querySelectorAll('.map__filters select');
   var featuresList = document.querySelector('#housing-features');
 
@@ -45,10 +45,10 @@
     }
   };
 
-  var deleteOptionDisabled = function (data) {
-    for (var k = 0; k < data.length; k++) {
-      var objectItem = data[k];
-      objectItem.removeAttribute('disabled', 'disabled');
+  var deleteOptionDisabled = function (object) {
+    for (var k = 0; k < object.length; k++) {
+      var fieldsetItem = object[k];
+      fieldsetItem.removeAttribute('disabled', 'disabled');
     }
   };
 
@@ -115,23 +115,22 @@
       activeForm();
     }
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+    var Coord = function (x, y) {
+      this.x = x;
+      this.y = y;
     };
+
+    var startCoords = new Coord(evt.clientX, evt.clientY);
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
+      var coordX = startCoords.x - moveEvt.clientX;
+      var coordY = startCoords.y - moveEvt.clientY;
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+      var shift = new Coord(coordX, coordY);
+
+      startCoords = new Coord(moveEvt.clientX, moveEvt.clientY);
 
       var offsetLeft = window.render.mainPin.offsetLeft;
       var offsetTop = window.render.mainPin.offsetTop;

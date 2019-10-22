@@ -54,22 +54,17 @@
 
     // Put on a handler for closing advert
     var buttonPopup = advertElement.querySelector('.popup__close');
-    var hidePopup = function () {
-      var popup = document.querySelector('.map__card');
-      if (popup) {
-        popup.parentNode.removeChild(popup);
-      }
-      // advertElement.parentNode.removeChild(advertElement);
-      document.removeEventListener('keydown', onPopuoCloseEscapePress);
-    };
+
     var onPopuoCloseEscapePress = function (evt) {
       if (evt.keyCode === window.util.ECS_CODE) {
-        hidePopup();
+        window.render.deleteAdvert();
+        document.removeEventListener('keydown', onPopuoCloseEscapePress);
       }
     };
 
     buttonPopup.addEventListener('click', function () {
-      hidePopup();
+      window.render.deleteAdvert();
+      document.removeEventListener('keydown', onPopuoCloseEscapePress);
     });
     document.addEventListener('keydown', onPopuoCloseEscapePress);
 
