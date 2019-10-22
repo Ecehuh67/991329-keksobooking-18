@@ -1,4 +1,4 @@
-// File pin.js
+// File render.js
 'use strict';
 
 (function () {

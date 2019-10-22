@@ -1,4 +1,4 @@
-// File main.js
+// File form.js
 
 'use strict';
 (function () {
