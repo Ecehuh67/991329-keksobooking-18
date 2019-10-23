@@ -55,29 +55,11 @@
   };
 
   // Call the callbacks functions
-  window.pin.pin.onAccomodationChange = window.debounce(function (type) {
-    filters.type = type;
-    updatePins();
-  });
-
-  window.pin.pin.onRoomsChange = window.debounce(function (room) {
-    filters.rooms = room;
-    updatePins();
-  });
-
-  window.pin.pin.onGuestsChange = window.debounce(function (guest) {
-    filters.guests = guest;
-    updatePins();
-  });
-
-  window.pin.pin.onPriceChange = window.debounce(function (price) {
-    filters.price = price;
-    updatePins();
-  });
-
-  window.pin.pin.onFeaturesChange = window.debounce(function () {
-    filters.features = window.pin.data;
-    updatePins();
+  Object.keys(window.pin.filters).forEach(function (el) {
+    window.pin.filters[el].handler = window.debounce(function (select) {
+      filters[el] = select;
+      updatePins();
+    });
   });
 
   // Create a function for filtering pins according to chosen filters and render them

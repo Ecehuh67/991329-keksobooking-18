@@ -91,6 +91,15 @@
 
     window.form.form.reset();
 
+    var avatar = document.querySelector('.ad-form-header__preview img');
+    var adPhoto = document.querySelector('.ad-form__photo img');
+
+    var clearSrcImage = function (image) {
+      image.setAttribute('src', 'img/muffin-grey.svg');
+    };
+    clearSrcImage(avatar);
+    clearSrcImage(adPhoto);
+
     var messageSuccess = document.body.querySelector('main .success');
 
     // Create callback to delete message by click

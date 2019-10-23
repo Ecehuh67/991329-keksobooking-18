@@ -6,78 +6,57 @@
   // Create data for saving list of features
   var data = [];
 
-  var pin = {
-    onAccomodationChange: function () {},
-    onPriceChange: function () {},
-    onRoomsChange: function () {},
-    onGuestsChange: function () {},
-    onFeaturesChange: function () {}
+  var getFeatures = function (input) {
+    if (data.indexOf(input) >= 0) {
+      data.splice(data.indexOf(input), 1);
+    } else {
+      data.push(input);
+    }
+
+    return data;
   };
 
-  // Find all selects and inputs
-  var typeOfHouse = document.querySelector('#housing-type');
-  var price = document.querySelector('#housing-price');
-  var rooms = document.querySelector('#housing-rooms');
-  var guests = document.querySelector('#housing-guests');
-  var features = document.querySelector('#housing-features');
-
-  // var filt = {
-  //   typeOfHouse: document.querySelector('#housing-type'),
-  //   price: document.querySelector('#housing-price'),
-  //   rooms: document.querySelector('#housing-rooms'),
-  //   guests: document.querySelector('#housing-guests'),
-  //   features: document.querySelector('#housing-features')
-  // };
-  //
-  // Object.keys(filt).forEach(function (el) {
-  //   eval(el).addEventListener('change', function (evt) {
-  //     window.render.deleteAdvert();
-  //     var value = evt.target.value;
-  //     console.log(value);
-
-  //  // как можно передать здесь value в pin??????
-  //   });
-  // });
-
-  // Put a handler on inputs of features
-  features.addEventListener('change', function (evt) {
-    window.render.deleteAdvert();
-    var value = evt.target.value;
-
-    // Define is there a feature in the list or not. If not add it
-    if (data.indexOf(value) >= 0) {
-      data.splice(data.indexOf(value), 1);
-    } else {
-      data.push(value);
+  // Create list of features
+  var filters = {
+    type: {
+      handler: function () {},
+      link: document.querySelector('#housing-type')
+    },
+    price: {
+      handler: function () {},
+      link: document.querySelector('#housing-price')
+    },
+    rooms: {
+      handler: function () {},
+      link: document.querySelector('#housing-rooms')
+    },
+    guests: {
+      handler: function () {},
+      link: document.querySelector('#housing-guests')
+    },
+    features: {
+      handler: function () {},
+      link: document.querySelector('#housing-features')
     }
-    pin.onFeaturesChange(data);
-  });
+  };
 
-  // Put handlers on selects of the filter
-  typeOfHouse.addEventListener('change', function (evt) {
-    window.render.deleteAdvert();
-    var value = evt.target.value;
-    pin.onAccomodationChange(value);
-  });
-  price.addEventListener('change', function (evt) {
-    window.render.deleteAdvert();
-    var value = evt.target.value;
-    pin.onPriceChange(value);
-  });
-  rooms.addEventListener('change', function (evt) {
-    window.render.deleteAdvert();
-    var value = evt.target.value;
-    pin.onRoomsChange(value);
-  });
-  guests.addEventListener('change', function (evt) {
-    window.render.deleteAdvert();
-    var value = evt.target.value;
-    pin.onGuestsChange(value);
+  // Put a handler on features
+  Object.keys(filters).forEach(function (el) {
+    filters[el].link.addEventListener('change', function (evt) {
+      window.render.deleteAdvert();
+      var value = evt.target.value;
+      if (filters[el] === filters.features) {
+        getFeatures(value);
+        filters[el].handler(data);
+      } else {
+        filters[el].handler(value);
+      }
+    });
   });
 
   window.pin = {
-    pin: pin,
-    data: data
+    data: data,
+    filters: filters
   };
 
 }());
