@@ -82,7 +82,7 @@
 
     // Render pins on the map from server data
     var server = window.filter;
-    window.request.load(server.successHandler, server.errorHandler);
+    window.request.pattern(server.successHandler, server.errorHandler, 'GET', window.request.URL.load);
     window.render.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     window.render.mainPin.removeEventListener('click', activeForm);
@@ -232,7 +232,7 @@
   });
 
   form.addEventListener('submit', function (evt) {
-    window.request.upload(new FormData(form), window.request.uploadSuccessHandler, window.request.uploadErrorHandler);
+    window.request.pattern(window.request.uploadSuccessHandler, window.request.uploadErrorHandler, 'POST', window.request.URL.upload, new FormData(form));
     evt.preventDefault();
   });
 
@@ -243,7 +243,8 @@
     MAIN_PIN_X: MAIN_PIN_X,
     MAIN_PIN_Y: MAIN_PIN_Y,
     getAddress: getAddress,
-    mousedown: mousedown
+    mousedown: mousedown,
+    setOptionDisabled: setOptionDisabled
   };
 
 })();

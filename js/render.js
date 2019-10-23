@@ -6,6 +6,7 @@
   var MAP_PIN_Y = 70; // Высота метки на карте
 
   var map = document.querySelector('.map');
+  var overlay = document.querySelector('.map__overlay');
   var mainPin = map.querySelector('.map__pin--main');// Find major pin in the code
   var mapPins = document.querySelector('.map__pins');
   var accomodationTemplate = document.querySelector('#pin')
@@ -81,6 +82,7 @@
     mainPin: mainPin,
     mapPins: mapPins,
     render: render,
-    deleteAdvert: deleteAdvert
+    deleteAdvert: deleteAdvert,
+    overlay: overlay
   };
 })();

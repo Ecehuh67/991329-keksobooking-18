@@ -2,33 +2,15 @@
 'use strict';
 
 (function () {
-  var urlLoad = 'https://js.dump.academy/keksobooking/data';
-
-  // URL for uploading data on a server
-  var urlUpload = 'https://js.dump.academy/keksobooking';
-
-  // Function for getting data from a server
-  var load = function (onSuccess, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.open('GET', urlLoad);
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onSuccess(xhr.response);
-      } else {
-        onError();
-      }
-    });
-
-    xhr.send();
+  var URL = {
+    load: 'https://js.dump.academy/keksobooking/data',
+    upload: 'https://js.dump.academy/keksobooking'
   };
 
-  // Create function which will be able to check status of loading data
-  var upload = function (data, onSuccess, onError) {
+  var pattern = function (onSuccess, onError, method, url, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
+    xhr.open(method, url);
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
@@ -38,8 +20,14 @@
       }
     });
 
-    xhr.open('POST', urlUpload);
-    xhr.send(data);
+    switch (method) {
+      case 'GET':
+        xhr.send();
+        break;
+      case 'POST':
+        xhr.send(data);
+        break;
+    }
   };
 
   // Create function if there is a mistake in an uploading form
@@ -128,6 +116,15 @@
     // Return form to an initial view
     window.render.map.classList.add('map--faded');
     window.form.form.classList.add('ad-form--disabled');
+
+    var filters = document.querySelectorAll('.map__filters select');
+    var featuresList = document.querySelector('#housing-features');
+
+    window.form.setOptionDisabled(filters);
+    featuresList.setAttribute('disabled', 'disabled');
+
+    window.render.mapPins.insertAdjacentElement('afterbegin', window.render.overlay);
+
     var advertFieldset = window.form.form.querySelectorAll('fieldset');
     advertFieldset.forEach(function (advert) {
       advert.setAttribute('disabled', 'disabled');
@@ -154,9 +151,9 @@
   };
 
   window.request = {
-    load: load,
-    upload: upload,
     uploadErrorHandler: uploadErrorHandler,
-    uploadSuccessHandler: uploadSuccessHandler
+    uploadSuccessHandler: uploadSuccessHandler,
+    pattern: pattern,
+    URL: URL
   };
 })();
