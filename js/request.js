@@ -7,7 +7,7 @@
     upload: 'https://js.dump.academy/keksobooking'
   };
 
-  var pattern = function (onSuccess, onError, method, url, data) {
+  var createRequest = function (onSuccess, onError, method, url, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.open(method, url);
@@ -38,14 +38,15 @@
     var error = errorTemplate.cloneNode(true);
 
     // Add the pattern in DOM
-    document.body.querySelector('main').insertAdjacentElement('afterbegin', error);
+    // document.body.querySelector('main').insertAdjacentElement('afterbegin', error);
+    document.body.querySelector('main').prepend(error);
 
     // Find the error message to delete it
     var messageError = document.body.querySelector('main .error');
 
     // Create callback to delete message by click
     var onFormErrorButton = function () {
-      messageError.parentNode.removeChild(messageError);
+      messageError.remove();
       document.removeEventListener('click', onFormErrorButton);
       document.removeEventListener('keydown', onFormErrorEscapePress);
     };
@@ -53,7 +54,7 @@
     // Create callback to delete message by press Escape
     var onFormErrorEscapePress = function (evt) {
       if (evt.keyCode === window.util.ECS_CODE) {
-        messageError.parentNode.removeChild(messageError);
+        messageError.remove();
         document.removeEventListener('keydown', onFormErrorEscapePress);
         document.removeEventListener('click', onFormErrorButton);
       }
@@ -75,7 +76,8 @@
     var success = successTemplate.cloneNode(true);
 
     // Add the pattern in DOM
-    document.body.querySelector('main').insertAdjacentElement('afterbegin', success);
+    // document.body.querySelector('main').insertAdjacentElement('afterbegin', success);
+    document.body.querySelector('main').prepend(success);
 
     window.form.form.reset();
 
@@ -83,7 +85,7 @@
     var adPhoto = document.querySelector('.ad-form__photo img');
 
     var clearSrcImage = function (image) {
-      image.setAttribute('src', 'img/muffin-grey.svg');
+      image.src = 'img/muffin-grey.svg';
     };
     clearSrcImage(avatar);
     clearSrcImage(adPhoto);
@@ -92,7 +94,7 @@
 
     // Create callback to delete message by click
     var onFormSuccessWindow = function () {
-      messageSuccess.parentNode.removeChild(messageSuccess);
+      messageSuccess.remove();
       document.removeEventListener('click', onFormSuccessWindow);
       document.removeEventListener('keydown', onFormSuccessEscapePress);
     };
@@ -100,7 +102,7 @@
     // Create callback to delete message by press Escape
     var onFormSuccessEscapePress = function (evt) {
       if (evt.keyCode === window.util.ECS_CODE) {
-        messageSuccess.parentNode.removeChild(messageSuccess);
+        messageSuccess.remove();
         document.removeEventListener('keydown', onFormSuccessEscapePress);
         document.removeEventListener('click', onFormSuccessWindow);
       }
@@ -123,11 +125,10 @@
     window.form.setOptionDisabled(filters);
     featuresList.setAttribute('disabled', 'disabled');
 
-    window.render.mapPins.insertAdjacentElement('afterbegin', window.render.overlay);
+    window.render.mapPins.prepend(window.render.overlay);
 
-    var advertFieldset = window.form.form.querySelectorAll('fieldset');
-    advertFieldset.forEach(function (advert) {
-      advert.setAttribute('disabled', 'disabled');
+    window.form.formFields.forEach(function (field) {
+      field.setAttribute('disabled', 'disabled');
     });
 
     // Find an opened advert and close it
@@ -136,12 +137,12 @@
     // Find pins and delete them from map
     var pins = window.render.map.querySelectorAll('.map__pin');
     for (var j = 1; j < pins.length; j++) {
-      pins[j].parentNode.removeChild(pins[j]);
+      pins[j].remove();
     }
 
     // Create a handler for activating form again
     var onMapPinClick = function () {
-      window.form.mousedown(advertFieldset);
+      window.form.makeFormActive(window.form.formFields);
       window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
       window.render.mainPin.removeEventListener('click', onMapPinClick);
     };
@@ -153,7 +154,7 @@
   window.request = {
     uploadErrorHandler: uploadErrorHandler,
     uploadSuccessHandler: uploadSuccessHandler,
-    pattern: pattern,
+    createRequest: createRequest,
     URL: URL
   };
 })();

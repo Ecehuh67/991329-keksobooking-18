@@ -41,17 +41,9 @@
 
   // Create a function for comparing features from list to pins
   var findOutFeatures = function (listOfFeatures, range) {
-    var count = 0;
-    for (var k = 0; k < listOfFeatures.length; k++) {
-      if (range.offer.features.indexOf(listOfFeatures[k])) {
-        count += 1;
-      }
-    }
-    if (count === listOfFeatures.length) {
-      return count;
-    } else {
-      return 0;
-    }
+    return listOfFeatures.every(function (feature) {
+      return range.includes(feature);
+    });
   };
 
   // Call the callbacks functions
@@ -62,43 +54,27 @@
     });
   });
 
+  var compareThings = function (clause, value) {
+    if (clause === 'any') {
+      return true;
+    } else {
+      return value.toString() === clause;
+    }
+  };
+
   // Create a function for filtering pins according to chosen filters and render them
   var updatePins = function () {
     var temporaryPins = pins.filter(function (pin) {
-      if (filters.type === 'any') {
-        return pin;
-      } else {
-        return pin.offer.type === filters.type;
-      }
+      return compareThings(filters.type, pin.offer.type);
     }).filter(function (pin) {
-      if (filters.rooms === 'any') {
-        return pin;
-      } else {
-        return pin.offer.rooms === +filters.rooms;
-      }
+      return findOutFeatures(filters.features, pin.offer.features);
     }).filter(function (pin) {
-      if (filters.guests === 'any') {
-        return pin;
-      } else {
-        return pin.offer.guests === +filters.guests;
-      }
+      return compareThings(filters.rooms, pin.offer.rooms);
     }).filter(function (pin) {
-      var nameOfRange = getRangePrice(pin.offer.price);
-      if (filters.price === 'any') {
-        return pin;
-      } else {
-        return nameOfRange === filters.price;
-      }
+      return compareThings(filters.guests, pin.offer.guests);
     }).filter(function (pin) {
-      if (filters.features.length === 0) {
-        return pin;
-      } else if (findOutFeatures(filters.features, pin) > 0) {
-        return pin;
-      } else {
-        return 0;
-      }
+      return compareThings(filters.price, getRangePrice(pin.offer.price));
     });
-
     window.render.render(temporaryPins);
   };
 
@@ -119,7 +95,7 @@
     var error = errorTemplate.cloneNode(true);
 
     // Add the pattern in DOM
-    document.body.insertAdjacentElement('afterbegin', error);
+    document.body.prepend(error);
   };
 
   window.filter = {

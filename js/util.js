@@ -7,14 +7,14 @@
     ECS_CODE: 27,
 
     // Генерация рандомного массива
-    getRandomData: function (object) {
+    getRandomData: function (array) {
 
       // Генерируем  рандомную длинну массива
-      var randomNumber = this.getRandomFloat(0, object.length);
+      var randomNumber = this.getRandomFloat(0, array.length);
       var data = [];
       // Записываем в рандомный массив данные из массива переданного в параметр
       for (var k = 0; k < randomNumber; k++) {
-        data.push(object[k]);
+        data.push(array[k]);
       }
       return data;
     },

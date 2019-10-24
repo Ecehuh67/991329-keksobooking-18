@@ -4,6 +4,7 @@
 (function () {
   var MAP_PIN_X = 50; // Ширина метки на карте
   var MAP_PIN_Y = 70; // Высота метки на карте
+  var AMOUNT_OF_ADVERT = 5;
 
   var map = document.querySelector('.map');
   var overlay = document.querySelector('.map__overlay');
@@ -16,7 +17,7 @@
   var deleteAdvert = function () {
     var popup = document.querySelector('.map__card');
     if (popup) {
-      popup.parentNode.removeChild(popup);
+      popup.remove();
     }
   };
 
@@ -46,7 +47,7 @@
     // Create a function to show an advert by clicking a pin
     var showAdvert = function () {
       var advert = document.createDocumentFragment();
-      advert.appendChild(window.advert.renderAdvert(accomodation));
+      advert.prepend(window.advert.renderAdvert(accomodation));
       map.insertBefore(advert, map.querySelector('.map__filters-container'));
     };
 
@@ -63,16 +64,16 @@
     // Создаем буфер куда будем временно копировать маркеры карты
     var fragment = document.createDocumentFragment();
 
-    var takeNumver = data.length > 5 ? 5 : data.length;
+    var takeNumber = data.length > AMOUNT_OF_ADVERT ? AMOUNT_OF_ADVERT : data.length;
     // Копируем метки в буфер
-    for (var i = 0; i < takeNumver; i++) {
-      fragment.appendChild(renderAccomodation(data[i]));
+    for (var i = 0; i < takeNumber; i++) {
+      fragment.prepend(renderAccomodation(data[i]));
     }
 
     mapPins.innerHTML = '';
-    mapPins.appendChild(mainPin);
+    mapPins.prepend(mainPin);
     // Render pins on the map from buffer
-    mapPins.appendChild(fragment);
+    mapPins.append(fragment);
   };
 
 

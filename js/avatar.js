@@ -6,10 +6,9 @@
 
   var createImg = function () {
     var image = document.createElement('img');
-    image.setAttribute('src', 'img/muffin-grey.svg');
-    image.setAttribute('width', '70');
-    image.setAttribute('height', '70');
-
+    image.src = 'img/muffin-grey.svg';
+    image.width = '70';
+    image.height = '70';
     return image;
   };
 
@@ -19,7 +18,7 @@
   var advertChooser = document.querySelector('#images');
   var container = document.querySelector('.ad-form__photo');
 
-  container.appendChild(createImg());
+  container.prepend(createImg());
   var adPhoto = container.querySelector('img');
 
   var attachPhoto = function (chooser, photo) {

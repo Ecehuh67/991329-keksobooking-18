@@ -32,7 +32,7 @@
     for (var j = 0; j < advertisment.offer.features.length; j++) {
       var listItem = document.createElement('li');
       listItem.classList.add('popup__feature--' + advertisment.offer.features[j], 'popup__feature');
-      list.appendChild(listItem);
+      list.prepend(listItem);
     }
 
     advertElement.querySelector('.popup__description').textContent = advertisment.offer.description;
@@ -43,11 +43,12 @@
     for (var k = 0; k < advertisment.offer.photos.length; k++) {
       var imageItem = document.createElement('img');
       imageItem.classList.add('popup__photo');
-      imageItem.setAttribute('src', advertisment.offer.photos[k]);
-      imageItem.setAttribute('width', '45');
-      imageItem.setAttribute('height', '40');
-      imageItem.setAttribute('alt', 'Фотография жилья');
-      images.appendChild(imageItem);
+
+      imageItem.src = advertisment.offer.photos[k];
+      imageItem.width = '45';
+      imageItem.height = '40';
+      imageItem.alt = 'Фотография жилья' + ' ' + (k + 1);
+      images.append(imageItem);
     }
 
     advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author.avatar);

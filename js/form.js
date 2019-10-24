@@ -2,9 +2,6 @@
 
 'use strict';
 (function () {
-
-  var form = document.querySelector('.ad-form');
-
   var MAIN_PIN_X = 65;
   var MAIN_PIN_Y = 65;
   var MAIN_PIN_X_ACTIVE = 65;
@@ -27,33 +24,33 @@
   };
 
   var ROOMS = [1, 2, 3, 0];
-  var GUESTS = [3, 2, 1, 0];
 
+  var form = document.querySelector('.ad-form');
   var isActive = false;
 
   // Find form to ban fieldset be edited
-  var advertFieldset = form.querySelectorAll('fieldset');
+  var formFields = form.querySelectorAll('fieldset');
 
   var filters = document.querySelectorAll('.map__filters select');
   var featuresList = document.querySelector('#housing-features');
 
   // Create a function for setting 'disabled' on fields of the form
-  var setOptionDisabled = function (object) {
-    for (var j = 0; j < object.length; j++) {
-      var fieldsetItem = object[j];
+  var setOptionDisabled = function (array) {
+    for (var j = 0; j < array.length; j++) {
+      var fieldsetItem = array[j];
       fieldsetItem.setAttribute('disabled', 'disabled');
     }
   };
 
-  var deleteOptionDisabled = function (object) {
-    for (var k = 0; k < object.length; k++) {
-      var fieldsetItem = object[k];
+  var deleteOptionDisabled = function (array) {
+    for (var k = 0; k < array.length; k++) {
+      var fieldsetItem = array[k];
       fieldsetItem.removeAttribute('disabled', 'disabled');
     }
   };
 
   // Set 'disabled' on each fieldset of the form
-  setOptionDisabled(advertFieldset);
+  setOptionDisabled(formFields);
   setOptionDisabled(filters);
   featuresList.setAttribute('disabled', 'disabled');
 
@@ -73,8 +70,8 @@
   getAddress(MAIN_PIN_X, MAIN_PIN_Y);
 
   // Create a function for deleting 'disabled' from each fieldset of the form
-  var mousedown = function (object) {
-    deleteOptionDisabled(object);
+  var makeFormActive = function (fields) {
+    deleteOptionDisabled(fields);
 
     // Active fields of the filter
     deleteOptionDisabled(filters);
@@ -82,10 +79,10 @@
 
     // Render pins on the map from server data
     var server = window.filter;
-    window.request.pattern(server.successHandler, server.errorHandler, 'GET', window.request.URL.load);
+    window.request.createRequest(server.successHandler, server.errorHandler, 'GET', window.request.URL.load);
     window.render.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
-    window.render.mainPin.removeEventListener('click', activeForm);
+    // window.render.mainPin.removeEventListener('click', activeForm);
 
     isActive = true;
 
@@ -93,14 +90,14 @@
   };
 
   // Put a function in constant for way to delete it from a handler
-  var activeForm = function () {
-    mousedown(advertFieldset);
-  };
+  // var activeForm = function () {
+  //   makeFormActive(formFields);
+  // };
 
   // Create function for activating form by pressing Enter
   var onMapPinEnterPress = function (evt) {
     if (evt.keyCode === window.util.ENT_CODE) {
-      mousedown(advertFieldset);
+      makeFormActive(formFields);
       getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
       window.render.mainPin.removeEventListener('keydown', onMapPinEnterPress);
     }
@@ -112,7 +109,7 @@
   window.render.mainPin.addEventListener('mousedown', function (evt) {
 
     if (!isActive) {
-      activeForm();
+      makeFormActive(formFields);
     }
 
     var Coord = function (x, y) {
@@ -124,6 +121,7 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
+      getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
 
       var coordX = startCoords.x - moveEvt.clientX;
       var coordY = startCoords.y - moveEvt.clientY;
@@ -140,7 +138,7 @@
         return startCoords.x;
 
       } else if (offsetLeft - shift.x + MAIN_PIN_X_ACTIVE / 2 > window.render.map.clientWidth) {
-        startCoords.x = window.pin.render.clientWidth + 'px';
+        startCoords.x = window.render.map.clientWidth + 'px';
         return startCoords.x;
       }
 
@@ -162,9 +160,6 @@
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
 
-      // Change сoordinates for pin in the field of address
-      getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
-
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -178,22 +173,26 @@
   var selectRooms = document.querySelector('#room_number');
   var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
 
-  // Put disabled on list of guests to avoid bag with 1 room and 1 guest when
-  // the page will be opened without changing amount of rooms
-  setOptionDisabled(optionGuests);
-
   // Create a function to cansel disabled on option for choosing guests
   var getAvailableGuests = function () {
-    setOptionDisabled(optionGuests);
     var index = selectRooms.selectedIndex;
     var dataGuests = ROOMS_GUESTS_RELATION[ROOMS[index]];
-    for (var j = 0; j < GUESTS.length; j++) {
-      for (var k = 0; k < dataGuests.length; k++) {
-        if (GUESTS[j] === dataGuests[k]) {
-          optionGuests[j].removeAttribute('disabled', 'disabled');
-        }
-      }
-    }
+    var optionArray = Array.from(optionGuests);
+
+    setOptionDisabled(optionGuests);
+
+    optionGuests.forEach(function (el) {
+      el.removeAttribute('selected', '');
+    });
+
+    dataGuests.map(function (value) {
+      return optionArray.find(function (option) {
+        return +option.value === value;
+      });
+    }).forEach(function (el) {
+      el.removeAttribute('disabled', '');
+      el.setAttribute('selected', '');
+    });
   };
 
   // Put a handler on to control the list of guests
@@ -220,19 +219,19 @@
   });
 
   // Create function for cleaning data from selected
-  var timein = document.querySelector('#timein');
-  var timeout = document.querySelector('#timeout');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
 
   // Pun on handlers if timein/timeout are changed
-  timein.addEventListener('change', function () {
-    timeout.value = timein.value;
+  timeIn.addEventListener('change', function () {
+    timeOut.value = timeIn.value;
   });
-  timeout.addEventListener('change', function () {
-    timein.value = timeout.value;
+  timeOut.addEventListener('change', function () {
+    timeIn.value = timeOut.value;
   });
 
   form.addEventListener('submit', function (evt) {
-    window.request.pattern(window.request.uploadSuccessHandler, window.request.uploadErrorHandler, 'POST', window.request.URL.upload, new FormData(form));
+    window.request.createRequest(window.request.uploadSuccessHandler, window.request.uploadErrorHandler, 'POST', window.request.URL.upload, new FormData(form));
     evt.preventDefault();
   });
 
@@ -243,8 +242,9 @@
     MAIN_PIN_X: MAIN_PIN_X,
     MAIN_PIN_Y: MAIN_PIN_Y,
     getAddress: getAddress,
-    mousedown: mousedown,
-    setOptionDisabled: setOptionDisabled
+    makeFormActive: makeFormActive,
+    setOptionDisabled: setOptionDisabled,
+    formFields: formFields
   };
 
 })();
