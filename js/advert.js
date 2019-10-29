@@ -14,48 +14,59 @@
   var advertTemplate = document.querySelector('#card').
   content.
   querySelector('.map__card');
+  var advertElement = advertTemplate.cloneNode(true);
+  var buttonPopup = advertElement.querySelector('.popup__close');
+  var images = advertElement.querySelector('.popup__photos');
+  var list = advertElement.querySelector('.popup__features');
 
-  // Create a function for rendering an advert
-  var renderAdvert = function (advertisment) {
-    var advertElement = advertTemplate.cloneNode(true);
-    advertElement.querySelector('.popup__title').textContent = advertisment.offer.title;
-    advertElement.querySelector('.popup__text--address').textContent = advertisment.offer.address;
-    advertElement.querySelector('.popup__text--price').textContent = advertisment.offer.price + ' ₽/ночь';
-    advertElement.querySelector('.popup__type').textContent = TRANSLATE_OF_ACCOMODATION[advertisment.offer.type];
-
-    advertElement.querySelector('.popup__text--capacity').textContent = advertisment.offer.rooms + (advertisment.offer.rooms === 1 ? ' комнатa для ' : ' комнаты для ') + advertisment.offer.guests + (advertisment.offer.guests === 1 ? ' гостя ' : ' гостей');
-    advertElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advertisment.offer.checkin + ' выезд до ' + advertisment.offer.checkout;
-
-    // Добавляем удобства на карточку объявления исходя из рандомного массива
-    var list = advertElement.querySelector('.popup__features');
-    list.innerHTML = '';
-    for (var j = 0; j < advertisment.offer.features.length; j++) {
-      var listItem = document.createElement('li');
-      listItem.classList.add('popup__feature--' + advertisment.offer.features[j], 'popup__feature');
-      list.prepend(listItem);
-    }
-
-    advertElement.querySelector('.popup__description').textContent = advertisment.offer.description;
-
-    // Добавляем фото на карточку объявления исходя из рандомного массива
-    var images = advertElement.querySelector('.popup__photos');
+  var addImages = function (array) {
     images.innerHTML = '';
-    for (var k = 0; k < advertisment.offer.photos.length; k++) {
+    for (var i = 0; i < array.length; i++) {
       var imageItem = document.createElement('img');
       imageItem.classList.add('popup__photo');
 
-      imageItem.src = advertisment.offer.photos[k];
+      imageItem.src = array[i];
       imageItem.width = '45';
       imageItem.height = '40';
-      imageItem.alt = 'Фотография жилья' + ' ' + (k + 1);
+      imageItem.alt = 'Фотография жилья' + ' ' + (i + 1);
       images.append(imageItem);
     }
+    return images;
+  };
 
-    advertElement.querySelector('.popup__avatar').setAttribute('src', advertisment.author.avatar);
+  var addFeatures = function (array) {
+    list.innerHTML = '';
+    for (var i = 0; i < array.length; i++) {
+      var listItem = document.createElement('li');
+      listItem.classList.add('popup__feature--' + array[i], 'popup__feature');
+      list.prepend(listItem);
+    }
+    return list;
+  };
+
+  var createAdElement = function (pattern, avatar) {
+    advertElement.querySelector('.popup__title').textContent = pattern.title;
+    advertElement.querySelector('.popup__text--address').textContent = pattern.address;
+    advertElement.querySelector('.popup__text--price').textContent = pattern.price + ' ₽/ночь';
+    advertElement.querySelector('.popup__type').textContent = TRANSLATE_OF_ACCOMODATION[pattern.type];
+
+    advertElement.querySelector('.popup__text--capacity').textContent = pattern.rooms + (pattern.rooms === 1 ? ' комнатa для ' : ' комнаты для ') + pattern.guests + (pattern.guests === 1 ? ' гостя ' : ' гостей');
+    advertElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pattern.checkin + ' выезд до ' + pattern.checkout;
+    advertElement.querySelector('.popup__description').textContent = pattern.description;
+    advertElement.querySelector('.popup__avatar').setAttribute('src', avatar);
+  };
+
+  // Create a function for rendering an advert
+  var render = function (advertisment) {
+    createAdElement(advertisment.offer, advertisment.author.avatar);
+
+    // Добавляем удобства на карточку объявления исходя из рандомного
+    addFeatures(advertisment.offer.features);
+
+    // Добавляем фото на карточку объявления исходя из рандомного массива
+    addImages(advertisment.offer.photos);
 
     // Put on a handler for closing advert
-    var buttonPopup = advertElement.querySelector('.popup__close');
-
     var onPopuoCloseEscapePress = function (evt) {
       if (evt.keyCode === window.util.ECS_CODE) {
         window.render.deleteAdvert();
@@ -74,6 +85,6 @@
 
 
   window.advert = {
-    renderAdvert: renderAdvert
+    render: render
   };
 })();

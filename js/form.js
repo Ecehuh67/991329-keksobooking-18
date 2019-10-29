@@ -27,36 +27,48 @@
 
   var form = document.querySelector('.ad-form');
   var isActive = false;
+  var addressInput = document.querySelector('#address');
 
   // Find form to ban fieldset be edited
-  var formFields = form.querySelectorAll('fieldset');
+  var fields = form.querySelectorAll('fieldset');
 
   var filters = document.querySelectorAll('.map__filters select');
   var featuresList = document.querySelector('#housing-features');
 
+  // Find list of options of rooms
+  var selectRooms = document.querySelector('#room_number');
+  var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
+
+  // Create function for cleaning data from selected
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
+
+  // Find a field of type of accomodation
+  var type = document.querySelector('#type');
+  var price = document.querySelector('#price');
+
   // Create a function for setting 'disabled' on fields of the form
   var setOptionDisabled = function (array) {
-    for (var j = 0; j < array.length; j++) {
-      var fieldsetItem = array[j];
+    for (var i = 0; i < array.length; i++) {
+      var fieldsetItem = array[i];
       fieldsetItem.setAttribute('disabled', 'disabled');
     }
   };
 
   var deleteOptionDisabled = function (array) {
-    for (var k = 0; k < array.length; k++) {
-      var fieldsetItem = array[k];
-      fieldsetItem.removeAttribute('disabled', 'disabled');
+    for (var i = 0; i < array.length; i++) {
+      var fieldsetItem = array[i];
+      fieldsetItem.removeAttribute('disabled');
     }
   };
 
   // Set 'disabled' on each fieldset of the form
-  setOptionDisabled(formFields);
+  setOptionDisabled(fields);
   setOptionDisabled(filters);
   featuresList.setAttribute('disabled', 'disabled');
 
   // Create function to set address in a form
   var getAddress = function (pinX, pinY) {
-    var addressInput = document.querySelector('#address');
     var pointX = Math.round(parseInt(window.render.mainPin.style.left, 10) + pinX / 2);
     if (pinY === MAIN_PIN_Y) {
       var pointY = Math.round(parseInt(window.render.mainPin.style.top, 10) + pinY / 2);
@@ -70,16 +82,17 @@
   getAddress(MAIN_PIN_X, MAIN_PIN_Y);
 
   // Create a function for deleting 'disabled' from each fieldset of the form
-  var makeFormActive = function (fields) {
+  var makeActive = function () {
     deleteOptionDisabled(fields);
+    getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
 
     // Active fields of the filter
     deleteOptionDisabled(filters);
-    featuresList.removeAttribute('disabled', 'disabled');
+    featuresList.removeAttribute('disabled');
 
     // Render pins on the map from server data
-    var server = window.filter;
-    window.request.createRequest(server.successHandler, server.errorHandler, 'GET', window.request.URL.load);
+    var server = window.sorter;
+    window.request.createRequest(server.successHandler, server.errorHandler, window.request.METHODS.get, window.request.URL.load);
     window.render.map.classList.remove('map--faded');
     form.classList.remove('ad-form--disabled');
     // window.render.mainPin.removeEventListener('click', activeForm);
@@ -89,15 +102,10 @@
     return isActive;
   };
 
-  // Put a function in constant for way to delete it from a handler
-  // var activeForm = function () {
-  //   makeFormActive(formFields);
-  // };
-
   // Create function for activating form by pressing Enter
   var onMapPinEnterPress = function (evt) {
     if (evt.keyCode === window.util.ENT_CODE) {
-      makeFormActive(formFields);
+      makeActive(fields);
       getAddress(MAIN_PIN_X_ACTIVE, MAIN_PIN_Y_ACTIVE);
       window.render.mainPin.removeEventListener('keydown', onMapPinEnterPress);
     }
@@ -109,7 +117,7 @@
   window.render.mainPin.addEventListener('mousedown', function (evt) {
 
     if (!isActive) {
-      makeFormActive(formFields);
+      makeActive();
     }
 
     var Coord = function (x, y) {
@@ -169,10 +177,6 @@
 
   });
 
-  // Find list of options of rooms
-  var selectRooms = document.querySelector('#room_number');
-  var optionGuests = document.querySelector('#capacity').querySelectorAll('option');
-
   // Create a function to cansel disabled on option for choosing guests
   var getAvailableGuests = function () {
     var index = selectRooms.selectedIndex;
@@ -182,7 +186,7 @@
     setOptionDisabled(optionGuests);
 
     optionGuests.forEach(function (el) {
-      el.removeAttribute('selected', '');
+      el.removeAttribute('selected');
     });
 
     dataGuests.map(function (value) {
@@ -190,7 +194,7 @@
         return +option.value === value;
       });
     }).forEach(function (el) {
-      el.removeAttribute('disabled', '');
+      el.removeAttribute('disabled');
       el.setAttribute('selected', '');
     });
   };
@@ -200,15 +204,9 @@
     getAvailableGuests();
   });
 
-  // Find a field of type of accomodation
-  var type = document.querySelector('#type');
-
   // Create a function for defining min price for type of accomodation
   var getMinPriceOfAccomodation = function () {
-    var typeOptions = type.querySelectorAll('option');
-    var price = document.querySelector('#price');
-    var index = type.selectedIndex;
-    var minPrice = MINPRICE_OF_ACCOMODATION[typeOptions[index].value];
+    var minPrice = MINPRICE_OF_ACCOMODATION[type.value];
     price.setAttribute('min', minPrice);
     price.setAttribute('placeholder', minPrice);
   };
@@ -217,10 +215,6 @@
   type.addEventListener('change', function () {
     getMinPriceOfAccomodation();
   });
-
-  // Create function for cleaning data from selected
-  var timeIn = document.querySelector('#timein');
-  var timeOut = document.querySelector('#timeout');
 
   // Pun on handlers if timein/timeout are changed
   timeIn.addEventListener('change', function () {
@@ -231,20 +225,20 @@
   });
 
   form.addEventListener('submit', function (evt) {
-    window.request.createRequest(window.request.uploadSuccessHandler, window.request.uploadErrorHandler, 'POST', window.request.URL.upload, new FormData(form));
+    window.request.createRequest(window.request.uploadSuccessHandler, window.request.uploadErrorHandler, window.request.METHODS.post, window.request.URL.upload, new FormData(form));
     evt.preventDefault();
   });
 
   window.form = {
-    form: form,
     MAIN_PIN_X_ACTIVE: MAIN_PIN_X_ACTIVE,
     MAIN_PIN_Y_ACTIVE: MAIN_PIN_X_ACTIVE,
     MAIN_PIN_X: MAIN_PIN_X,
     MAIN_PIN_Y: MAIN_PIN_Y,
     getAddress: getAddress,
-    makeFormActive: makeFormActive,
+    makeActive: makeActive,
     setOptionDisabled: setOptionDisabled,
-    formFields: formFields
+    fields: fields,
+    filters: filters
   };
 
 })();

@@ -47,7 +47,7 @@
     // Create a function to show an advert by clicking a pin
     var showAdvert = function () {
       var advert = document.createDocumentFragment();
-      advert.prepend(window.advert.renderAdvert(accomodation));
+      advert.prepend(window.advert.render(accomodation));
       map.insertBefore(advert, map.querySelector('.map__filters-container'));
     };
 
@@ -60,7 +60,7 @@
     return accomodationElement;
   };
 
-  var render = function (data) {
+  var getPins = function (data) {
     // Создаем буфер куда будем временно копировать маркеры карты
     var fragment = document.createDocumentFragment();
 
@@ -78,11 +78,10 @@
 
 
   window.render = {
-    renderAccomodation: renderAccomodation,
     map: map,
     mainPin: mainPin,
     mapPins: mapPins,
-    render: render,
+    getPins: getPins,
     deleteAdvert: deleteAdvert,
     overlay: overlay
   };
