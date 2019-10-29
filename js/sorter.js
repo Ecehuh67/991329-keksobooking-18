@@ -27,12 +27,6 @@
     'high': 50000
   };
 
-  // Find pattern for rendering error message
-  var errorTemplate = document.querySelector('#error')
-  .content
-  .querySelector('.error');
-  var error = errorTemplate.cloneNode(true);
-
   // Create a function to get a name of a range of a price
   var getRangePrice = function (cost) {
     var typeOfPrice;
@@ -97,9 +91,8 @@
 
   // Callback for showing a error message if data isn't loaded from server
   var errorHandler = function () {
-
     // Add the pattern in DOM
-    document.body.prepend(error);
+    document.body.prepend(window.request.error);
   };
 
   window.sorter = {

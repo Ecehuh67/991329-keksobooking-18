@@ -7,6 +7,8 @@
     post: 'POST'
   };
 
+  var SUCCESS_CODE = 200;
+
   var URL = {
     load: 'https://js.dump.academy/keksobooking/data',
     upload: 'https://js.dump.academy/keksobooking'
@@ -38,7 +40,7 @@
     xhr.open(method, url);
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === SUCCESS_CODE) {
         onSuccess(xhr.response);
       } else {
         onError();
@@ -163,6 +165,7 @@
     uploadSuccessHandler: uploadSuccessHandler,
     createRequest: createRequest,
     URL: URL,
-    METHODS: METHODS
+    METHODS: METHODS,
+    error: error
   };
 })();

@@ -238,7 +238,7 @@
     makeActive: makeActive,
     setOptionDisabled: setOptionDisabled,
     fields: fields,
-    filters: filters
+    filters: filters,
   };
 
 })();
