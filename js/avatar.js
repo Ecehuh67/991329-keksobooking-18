@@ -4,44 +4,48 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  var createImg = function () {
+  var createImg = function (link) {
     var image = document.createElement('img');
-    image.src = 'img/muffin-grey.svg';
+    image.src = link;
     image.width = '70';
     image.height = '70';
     return image;
   };
 
   var fileChooser = document.querySelector('#avatar');
-  var preview = document.querySelector('.ad-form-header__preview img');
+  var preview = document.querySelector('.ad-form-header__preview');
 
   var advertChooser = document.querySelector('#images');
-  var container = document.querySelector('.ad-form__photo');
+  var adContainer = document.querySelector('.ad-form__photo');
 
-  container.prepend(createImg());
-  var adPhoto = container.querySelector('img');
+  var addImg = function (link, place) {
+    if (place === preview) {
+      place.innerHTML = '';
+    }
+    place.prepend(createImg(link));
+  };
 
-  var attachPhoto = function (chooser, photo) {
+  var attachPhoto = function (chooser, container) {
     chooser.addEventListener('change', function () {
-      var file = chooser.files[0];
+      var file = chooser.files;
       if (file) {
-        var fileName = file.name.toLowerCase();
-        var matches = FILE_TYPES.some(function (it) {
-          return fileName.endsWith(it);
-        });
-
-        if (matches) {
-          var reader = new FileReader();
-          reader.addEventListener('load', function () {
-            photo.src = reader.result;
+        Object.keys(file).forEach(function (key) {
+          var fileName = file[key].name.toLowerCase();
+          var matches = FILE_TYPES.some(function (type) {
+            return fileName.endsWith(type);
           });
-          reader.readAsDataURL(file);
-        }
+          if (matches) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function () {
+              addImg(reader.result, container);
+            });
+            reader.readAsDataURL(file[key]);
+          }
+        });
       }
     });
   };
 
   attachPhoto(fileChooser, preview);
-  attachPhoto(advertChooser, adPhoto);
-
+  attachPhoto(advertChooser, adContainer);
 }());
