@@ -48,4 +48,9 @@
 
   attachPhoto(fileChooser, preview);
   attachPhoto(advertChooser, adContainer);
+
+  window.avatar = {
+    preview: preview,
+    adContainer: adContainer
+  };
 }());

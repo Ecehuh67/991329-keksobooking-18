@@ -8,6 +8,10 @@
   };
 
   var SUCCESS_CODE = 200;
+  var AVATAR_SIZE = {
+    width: '40',
+    height: '44'
+  };
 
   var URL = {
     load: 'https://js.dump.academy/keksobooking/data',
@@ -17,6 +21,7 @@
   var COORDS_OF_MAIN_PIN = 'left: 570px; top: 375px;';
 
   var form = document.querySelector('.ad-form');
+  var clearFormButton = form.querySelector('.ad-form__reset');
 
   var errorTemplate = document.querySelector('#error')
   .content
@@ -28,10 +33,12 @@
   .querySelector('.success');
   var success = successTemplate.cloneNode(true);
 
-  var avatar = document.querySelector('.ad-form-header__preview img');
+  // var avatar = document.querySelector('.ad-form-header__preview img');
 
   var clearSrcImage = function (image) {
     image.src = 'img/muffin-grey.svg';
+    image.width = AVATAR_SIZE.width;
+    image.height = AVATAR_SIZE.height;
   };
 
   var createRequest = function (onSuccess, onError, method, url, data) {
@@ -89,6 +96,10 @@
     window.render.deleteAdvert();
   };
 
+  var deletePhoto = function (container) {
+    container.innerHTML = '';
+  };
+
   var clearForm = function () {
     // Find main pin and set it into the first position
     window.render.mainPin.setAttribute('style', COORDS_OF_MAIN_PIN);
@@ -117,18 +128,24 @@
     }
   };
 
+  clearFormButton.addEventListener('click', function () {
+    var avatar = document.querySelector('.ad-form-header__preview img');
+    deletePhoto(window.avatar.adContainer);
+    clearSrcImage(avatar);
+  });
+
   //
   var uploadSuccessHandler = function () {
+    var avatar = document.querySelector('.ad-form-header__preview img');
 
     // Add the pattern in DOM
     document.body.querySelector('main').prepend(success);
-    var adPhoto = document.querySelector('.ad-form__photo img');
     var messageSuccess = document.body.querySelector('main .success');
 
     form.reset();
     clearForm();
+    deletePhoto(window.avatar.adContainer);
     clearSrcImage(avatar);
-    clearSrcImage(adPhoto);
 
     // Create callback to delete message by click
     var onFormSuccessWindow = function () {
