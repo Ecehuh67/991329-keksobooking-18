@@ -126,6 +126,13 @@
     for (var i = 1; i < pins.length; i++) {
       pins[i].remove();
     }
+
+    window.form.optionGuests.forEach(function (option) {
+      option.removeAttribute('selected');
+      if (option.value === '1') {
+        option.setAttribute('selected', 'selected');
+      }
+    });
   };
 
   clearFormButton.addEventListener('click', function () {
