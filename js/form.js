@@ -239,7 +239,8 @@
     setOptionDisabled: setOptionDisabled,
     fields: fields,
     filters: filters,
-    optionGuests: optionGuests
+    optionGuests: optionGuests,
+    isActive: isActive
   };
 
 })();

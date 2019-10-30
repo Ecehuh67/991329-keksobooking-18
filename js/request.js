@@ -175,13 +175,14 @@
 
     // Create a handler for activating form again
     var onMapPinClick = function () {
+      window.form.isActive = false;
       window.form.makeActive(window.form.fields);
       window.form.getAddress(window.form.MAIN_PIN_X_ACTIVE, window.form.MAIN_PIN_Y_ACTIVE);
-      window.render.mainPin.removeEventListener('click', onMapPinClick);
+      window.render.mainPin.removeEventListener('mousedown', onMapPinClick);
     };
 
     // put the handler on the main pin
-    window.render.mainPin.addEventListener('click', onMapPinClick);
+    window.render.mainPin.addEventListener('mousedown', onMapPinClick);
   };
 
   window.request = {
